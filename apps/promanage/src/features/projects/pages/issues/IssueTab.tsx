@@ -1,0 +1,297 @@
+import { useState } from "react";
+import { convertAdToBs } from "@/shared/utils/nepali-date";
+import { fetchIssues, deleteIssue } from "@/features/projects/services/issue.service";
+import { Modal, message, Button } from "antd";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import Card from "@/shared/components/ui/Card";
+import Badge from "@/shared/components/ui/Badge";
+import { LayoutGrid, List, Pencil, Trash2, Plus, Search, RotateCcw } from "lucide-react";
+import IssueCreate from "./Create";
+import IssueSearch from "./Search";
+import AppTable from '@/shared/components/ui/AppTable';
+import { TableSkeleton } from '@/shared/components/ui/Loaders';
+import type { IssueItem,IssueTabProps } from '@/features/projects/types/projects-types';
+import Pagination from '@/shared/components/ui/Pagination';
+import { usePaginatedList, type PaginatedListParams } from '@/shared/hooks/usePaginatedList';
+import { fetchProjectInfo } from '@/features/tasks/services/task.service';
+
+export default function IssueTab({ project: propProject }: IssueTabProps) {
+  const queryClient = useQueryClient();
+  const [editingIssue, setEditingIssue] = useState<IssueItem | null>(null);
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('grid');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  const { data: project, isLoading: projectLoading } = useQuery({
+    queryKey: ['project-detail', propProject?.ProjectInfoID],
+    queryFn: ({ signal }) => fetchProjectInfo(propProject!.ProjectInfoID, signal),
+    enabled: Boolean(propProject?.ProjectInfoID),
+  });
+
+  const{
+    data: issues = [],
+    total: totalFiltered,
+    loading: issuesLoading,
+    currentPage,
+    pageSize,
+    setCurrentPage,
+    setPageSize,
+    refetch,
+  } = usePaginatedList<IssueItem>({
+    fetcher: (params: PaginatedListParams) => {
+      if (!project?.ProjectInfoID) return Promise.resolve({ items: [], total: 0 });
+      return fetchIssues(project, {
+        start: params.start as number,
+        length: params.length as number,
+        search: (params.search as string) || searchQuery,
+      }, params.signal);
+    },
+    extraDeps: [project, searchQuery],
+    queryKey: ['issues'],
+  });
+
+  if (projectLoading) {
+    return (
+      <Card>
+        <div className="rounded-xl border border-slate-200 bg-white p-6 text-base text-muted-foreground">Loading project...</div>
+      </Card>
+    );
+  }
+
+  const handleDeleteIssue = (issue: IssueItem) => {
+    Modal.confirm({
+      title: 'Delete Issue',
+      content: `Are you sure you want to delete "${issue.IssuesTitle}"?`,
+      okText: 'Delete',
+      okType: 'danger',
+      onOk: async () => {
+        try {
+          await deleteIssue(issue.IssuesID);
+          message.success('Issue deleted successfully');
+          queryClient.invalidateQueries({ queryKey: ['issues'] });
+          refetch();
+        } catch (err) {
+          message.error(err instanceof Error ? err.message : 'Failed to delete issue');
+        }
+      },
+    });
+  };
+
+  const handleClearIssueSearch = () => {
+    setIsSearchOpen(false);
+    setIsSearchActive(false);
+    setSearchQuery('');
+  };
+
+  const handleAdd = () => {
+    setEditingIssue(null);
+    setIsCreateOpen(true);
+  };
+
+  const handleEdit = (issue: IssueItem) => {
+    setEditingIssue(issue);
+    setIsCreateOpen(true);
+  };
+
+  const issueColumns = [
+    {
+      title: 'Issue',
+      dataIndex: 'IssuesTitle',
+      key: 'IssuesTitle',
+       render: (_text: string, record: IssueItem) => (
+          <div className="font-semibold text-slate-900">{record.IssuesTitle}</div>
+        ),
+    },
+    {
+      title: 'Label',
+      dataIndex: 'LabelInfoName',
+      key: 'LabelInfoName',
+       render: (__: any, record: IssueItem) =>
+        record.LabelInfoName ? (
+          <Badge
+            style={{
+              background: record.LabelColor ? `${record.LabelColor}15` : undefined,
+              color: record.LabelColor || undefined,
+              borderColor: record.LabelColor ? `${record.LabelColor}40` : undefined,
+            }}
+          >
+            {record.LabelInfoName}
+          </Badge>
+        ) : null,
+    },
+    {
+      title: 'Status',
+      dataIndex: 'WorkStatusName',
+      key: 'WorkStatusName',
+      render: (status: string) => status ? <Badge>{status}</Badge> : null,
+    },
+    {
+      title: 'Raised By',
+      dataIndex: 'RaisedBy',
+      key: 'RaisedBy',
+      render: (text: string) => text || '',
+    },
+    {
+      title: 'Date',
+      dataIndex: 'CreatedDate',
+      key: 'CreatedDate',
+      render: (date: string) => convertAdToBs(date) || '',
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+       render: (_: any, record: IssueItem) => (
+        <div className="flex items-center justify-end gap-1">
+          {record.HasUserRightToEdit && <Button type="text" size="small" icon={<Pencil size={16} />} onClick={() => handleEdit(record)} />}
+          {record.HasUserRightToDelete && (
+            <Button type="text" size="small" danger icon={<Trash2 size={16} />} onClick={() => handleDeleteIssue(record)} />
+          )}
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex items-center gap-2">
+          <Button icon={<Search size={16} />} onClick={() => setIsSearchOpen(true)}>
+            Search
+          </Button>
+          <Button icon={<RotateCcw size={16} />} onClick={handleClearIssueSearch}>
+            Clear
+          </Button>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center bg-white/70 border border-border rounded-2xl p-0.5 shadow-xs">
+            <Button type="text" onClick={() => setViewMode('grid')} icon={<LayoutGrid className="w-4 h-4" />} />
+            <Button type="text" onClick={() => setViewMode('list')} icon={<List className="w-4 h-4" />} />
+          </div>
+          <Button type="primary" icon={<Plus size={16} />} onClick={handleAdd}>
+            Add Issue
+          </Button>
+        </div>
+      </div>
+      {isSearchOpen && (
+        <IssueSearch
+          open={isSearchOpen}
+          onClose={() => setIsSearchOpen(false)}
+          onSearch={(values) => {
+            const searchTitle = String(values.IssuesTitle || '').toLowerCase();
+            setIsSearchActive(true);
+            setSearchQuery(searchTitle);
+          }}
+          onClear={handleClearIssueSearch}
+          project={project}
+          modal={false}
+        />
+      )}
+
+      {issuesLoading ? (
+        <TableSkeleton />
+      ) : issues.length === 0 ? (
+        <Card>
+          <div className="rounded-xl border border-slate-200 bg-white p-6 text-base text-muted-foreground text-center">
+            {isSearchActive ? 'No issues match your search.' : 'No issues found.'}
+          </div>
+        </Card>
+      ) : viewMode === 'list' ? (
+        <AppTable
+          columns={issueColumns}
+          dataSource={issues}
+          rowKey={(record) => record.IssuesID}
+          cardClassName="mt-4 overflow-x-auto"
+          rowHoverClassName="hover:bg-slate-50/60"
+          total={totalFiltered}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={(size) => {
+            setPageSize(size);
+            setCurrentPage(1);
+          }}
+        />
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+            {issues.map((issue) => (
+              <Card key={issue.IssuesID} hover className="flex flex-col">
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-base font-bold text-slate-900 truncate">{issue.IssuesTitle}</h4>
+                  <div className="mt-2 flex flex-wrap items-center gap-2 text-base text-muted-foreground">
+                    {issue.LabelInfoName && (
+                      <Badge
+                        style={{
+                          background: issue.LabelColor ? `${issue.LabelColor}15` : undefined,
+                          color: issue.LabelColor || undefined,
+                          borderColor: issue.LabelColor ? `${issue.LabelColor}40` : undefined,
+                        }}
+                      >
+                        {issue.LabelInfoName}
+                      </Badge>
+                    )}
+                    {issue.WorkStatusName && (
+                      <Badge>{issue.WorkStatusName}</Badge>
+                    )}
+                    <span>•</span>
+                    <span>Raised by: {issue.RaisedBy || ""}</span>
+                    <span>•</span>
+                    <span>{convertAdToBs(issue.CreatedDate)}</span>
+                  </div>
+                  {issue.Comments && (
+                    <p className="mt-2 text-base text-slate-500 line-clamp-2">{issue.Comments}</p>
+                  )}
+                </div>
+                <div className="flex items-center justify-end gap-2 pt-3 mt-3 border-t border-slate-100">
+                  {issue.HasUserRightToEdit && <Button size="small" onClick={() => handleEdit(issue)}>Edit</Button>}
+                  {issue.HasUserRightToDelete && (
+                    <Button size="small" danger onClick={() => handleDeleteIssue(issue)}>Delete</Button>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+          {viewMode === 'grid' && !issuesLoading && issues.length > 0 && (
+            <Pagination
+              total={totalFiltered}
+              currentPage={currentPage}
+              pageSize={pageSize}
+              onPageChange={setCurrentPage}
+              onPageSizeChange={(size) => {
+                setPageSize(size);
+                setCurrentPage(1);
+              }}
+            />
+          )}
+        </>
+      )}
+
+      <IssueCreate
+        open={isCreateOpen}
+        onClose={() => { setIsCreateOpen(false); setEditingIssue(null); }}
+        onSuccess={() => { 
+          setIsCreateOpen(false); 
+          setEditingIssue(null); 
+          queryClient.invalidateQueries({ queryKey: ['issues'] });
+          refetch(); 
+        }}
+        project={project}
+        editingIssue={editingIssue}
+      />
+    </div>
+  );
+}
+
+
+
+
+
+
+
+
+
+
+
+

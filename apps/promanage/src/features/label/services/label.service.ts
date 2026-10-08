@@ -1,0 +1,89 @@
+import { apiCall, cachedQuery, API_BASE } from '@/lib/api/api.service';
+import type { Label, ApiLabelResponse, ApiLabelRow, FetchLabelsParams, FetchLabelsResult } from '@/features/label/types/label-types';
+
+
+export const API_URL = `${API_BASE}/LabelInfo/ServerSearch`;
+
+export async function fetchLabels(
+  params: FetchLabelsParams
+): Promise<FetchLabelsResult> {
+  try {
+    return await cachedQuery(
+      ['labels', 'search', params.search, params.start, params.length],
+      (signal) => doFetchLabels(params, signal),
+      params.signal
+    );
+  } catch {
+    return { labels: [], total: 0, filtered: 0 };
+  }
+}
+
+async function doFetchLabels(
+  params: FetchLabelsParams,
+  signal?: AbortSignal
+): Promise<FetchLabelsResult> {
+  const res = await apiCall(API_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      model: {
+        draw: 1,
+        start: params.start || 0,
+        length: params.length || 12,
+        search: { value: (params.search || '').trim(), regex: '' },
+      },
+      param: { LabelInfoID: 0 },
+    }),
+    signal,
+  });
+
+  if (!res.ok) throw new Error(`Failed to fetch labels: ${res.statusText}`);
+
+  const json = await res.json();
+  const response = json as ApiLabelResponse;
+  const rows = Array.isArray(response?.data) ? (response.data as ApiLabelRow[]) : [];
+  const mapped = rows.map(mapApiRowToLabel);
+
+  return {
+    labels: mapped,
+    total: response.recordsTotal ?? 0,
+    filtered: response.recordsFiltered ?? 0,
+  };
+}
+
+function mapApiRowToLabel(row: ApiLabelRow): Label {
+  return {
+    SN: row.SN,
+    id: row.LabelInfoID,
+    name: row.LabelName,
+    code: row.LabelCode,
+  };
+}
+
+export async function saveLabel(body: Record<string, unknown>): Promise<{ success: boolean; message?: string; data?: unknown }> {
+  const res = await apiCall(`${API_BASE}/SaveLabelInfo`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.Message || `Failed to save label: ${res.statusText}`);
+  return {
+    success: json.Success ?? true,
+    message: json.Message,
+    data: json.Data ?? json.data,
+  };
+}
+
+export async function deleteLabel(id: number): Promise<{ success: boolean; message?: string }> {
+  const res = await apiCall(`${API_BASE}/DeleteLabelInfo?id=${id}`, { method: 'GET' });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(`Failed to delete label: ${res.statusText}`);
+  return { success: json.Success !== false, message: json.Message };
+}
+
+
+
+
+
+
+
+

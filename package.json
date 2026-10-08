@@ -1,0 +1,15 @@
+{
+  "name": "data_collection_suite",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:data_collectio": "npm run dev --workspace=data-collection",
+    "dev:promanage": "npm run dev --workspace=promanage",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present"
+  }
+}

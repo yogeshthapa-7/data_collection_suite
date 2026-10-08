@@ -1,0 +1,96 @@
+import { apiCall, cachedQuery, API_BASE } from '@/lib/api/api.service';
+import type { Policy, ApiPolicyResponse, ApiPolicyRow, FetchPoliciesParams, FetchPoliciesResult } from '@/features/policy/types/policy-types';
+
+
+
+export const API_URL = `${API_BASE}/PolicyProgram/ServerSearch`;
+
+export async function fetchPolicies(
+  params: FetchPoliciesParams
+): Promise<FetchPoliciesResult> {
+  try {
+    return await cachedQuery(
+      ['policies', 'search', params.search, params.fiscalYear, params.start, params.length],
+      (signal) => doFetchPolicies(params, signal),
+      params.signal
+    );
+  } catch {
+    return { policies: [], total: 0, filtered: 0 };
+  }
+}
+
+async function doFetchPolicies(
+  params: FetchPoliciesParams,
+  signal?: AbortSignal
+): Promise<FetchPoliciesResult> {
+  const res = await apiCall(API_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      model: {
+        draw: 1,
+        start: params.start || 0,
+        length: params.length || 12,
+        search: { value: (params.search || '').trim(), regex: '' },
+      },
+      param: { PolicyProgramID: 0 },
+    }),
+    signal,
+  });
+
+  if (!res.ok) throw new Error(`Failed to fetch policies: ${res.statusText}`);
+
+  const json = await res.json();
+  const response = json as ApiPolicyResponse;
+  const rows = Array.isArray(response?.data) ? (response.data as ApiPolicyRow[]) : [];
+  const mapped = rows.map(mapApiRowToPolicy);
+
+  return {
+    policies: mapped,
+    total: response.recordsTotal ?? 0,
+    filtered: response.recordsFiltered ?? 0,
+  };
+}
+
+function mapApiRowToPolicy(row: ApiPolicyRow): Policy {
+  const basePath = row.FileUpload || row.DocumentUrl || '';
+  const documentUrl = basePath ? `${API_BASE}/${basePath.replace(/^\/+/, '')}` : '';
+  const documentName = basePath ? decodeURIComponent(basePath.split('/').pop() || '') : '';
+  return {
+    SN: row.SN,
+    id: row.PolicyProgramID,
+    name: row.PolicyProgramName,
+    fiscal_year: row.FiscalYearName || row.FiscalYear,
+    fiscal_year_id: row.FiscalYearID,
+    document_url: documentUrl,
+    document_name: documentName,
+  };
+}
+
+export async function savePolicy(body: Record<string, unknown>): Promise<{ success: boolean; message?: string; data?: unknown }> {
+  const res = await apiCall(`${API_BASE}/SavePolicyProgram`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.Message || `Failed to save policy: ${res.statusText}`);
+  return {
+    success: json.Success ?? true,
+    message: json.Message,
+    data: json.Data ?? json.data,
+  };
+}
+
+export async function deletePolicy(id: number): Promise<{ success: boolean; message?: string }> {
+  const res = await apiCall(`${API_BASE}/DeletePolicyProgram?id=${id}`, { method: 'GET' });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(`Failed to delete policy: ${res.statusText}`);
+  return { success: json.Success !== false, message: json.Message };
+}
+
+
+
+
+
+
+
+

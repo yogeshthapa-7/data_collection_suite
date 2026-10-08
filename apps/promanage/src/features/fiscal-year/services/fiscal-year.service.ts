@@ -1,0 +1,141 @@
+import { apiCall, cachedQuery, API_BASE } from '@/lib/api/api.service';
+import { convertAdToBs } from '@/shared/utils/nepali-date';
+import type { FiscalYearSelectOption, FiscalYearItem, ApiFiscalYearResponse, ApiFiscalYearRow,
+  ApiSelectItem, FetchFiscalYearsParams, FetchFiscalYearsResult
+  } from '@/features/fiscal-year/types/fiscal-year-types';
+
+
+
+export const SELECT_LIST_URL = `${API_BASE}/FiscalYear/SelectList`;
+export const SERVER_SEARCH_URL = `${API_BASE}/FiscalYear/ServerSearch`;
+
+function mapSelectItem(item: ApiSelectItem): FiscalYearSelectOption {
+  const label = String(
+    item.FiscalYearName ?? item.FiscalYear ?? item.name ?? item.Text ?? ''
+  );
+  const value = String(
+    item.FiscalYearID ?? item.FiscalYear ?? item.FiscalYearName ?? item.name ?? item.Text ?? label
+  );
+  return { value, label, isRunning: item.IsRunning ?? 0 };
+}
+
+export async function fetchFiscalYearSelectList(
+  signal?: AbortSignal
+): Promise<FiscalYearSelectOption[]> {
+  try {
+    const res = await apiCall(
+      SELECT_LIST_URL,
+      { method: 'GET', signal },
+      30000
+    );
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch fiscal year list: ${res.statusText}`);
+    }
+
+    const json = await res.json();
+    const rows: ApiSelectItem[] = Array.isArray(json)
+      ? json
+      : Array.isArray(json?.data)
+        ? json.data
+        : Array.isArray(json?.Data)
+          ? json.Data
+          : [];
+
+    return rows.map(mapSelectItem);
+  } catch {
+    return [];
+  }
+}
+
+export async function fetchFiscalYears(
+  params: FetchFiscalYearsParams
+): Promise<FetchFiscalYearsResult> {
+  try {
+    return await cachedQuery(
+      ['fiscalYears', 'search', params.search, params.status, params.start, params.length],
+      (signal) => doFetchFiscalYears(params, signal),
+      params.signal
+    );
+  } catch {
+    return { fiscalYears: [], total: 0, filtered: 0 };
+  }
+}
+
+async function doFetchFiscalYears(
+  params: FetchFiscalYearsParams,
+  signal?: AbortSignal
+): Promise<FetchFiscalYearsResult> {
+  const res = await apiCall(SERVER_SEARCH_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: {
+        draw: 1,
+        start: params.start || 0,
+        length: params.length || 12,
+        search: { value: (params.search || '').trim(), regex: '' },
+      },
+      param: { FiscalYearID: 0 },
+    }),
+    signal,
+  });
+
+  if (!res.ok) throw new Error(`Failed to fetch fiscal years: ${res.statusText}`);
+
+  const json = await res.json();
+  const response = json as ApiFiscalYearResponse;
+  const rows = Array.isArray(response?.data) ? (response.data as ApiFiscalYearRow[]) : [];
+  const mapped = rows.map(mapApiRowToFiscalYear);
+
+  return {
+    fiscalYears: mapped,
+    total: response.recordsTotal ?? 0,
+    filtered: response.recordsFiltered ?? 0,
+  };
+}
+
+function mapApiRowToFiscalYear(row: ApiFiscalYearRow): FiscalYearItem {
+  const startDateBs = row.StartDate ? convertAdToBs(row.StartDate) : '';
+  const endDateBs = row.EndDate ? convertAdToBs(row.EndDate) : '';
+  return {
+    id: row.FiscalYearID,
+    name: row.FiscalYearName,
+    code: row.FiscalYearCode,
+    startDate: row.StartDate,
+    endDate: row.EndDate,
+    startDateBs,
+    endDateBs,
+    yearOrder: row.YearOrder,
+    isRunning: row.IsRunning,
+  };
+}
+
+export async function deleteFiscalYear(id: number): Promise<{ success: boolean; message?: string }> {
+  const res = await apiCall(`${API_BASE}/DeleteFiscalYear?id=${id}`, { method: 'GET' });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(`Failed to delete fiscal year: ${res.statusText}`);
+  return { success: json.Success !== false, message: json.Message };
+}
+
+export async function saveFiscalYear(body: Record<string, unknown>): Promise<{ success: boolean; message?: string; data?: unknown }> {
+  const res = await apiCall(`${API_BASE}/SaveFiscalYear`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json.Message || `Failed to save fiscal year: ${res.statusText}`);
+  return {
+    success: json.Success ?? true,
+    message: json.Message,
+    data: json.Data ?? json.data,
+  };
+}
+
+
+
+
+
+
+
+
