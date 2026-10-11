@@ -7,10 +7,7 @@ import type {
   // CategoryGroupServerSearchRequest,
   CategoryGroupItem,
 } from '@/features/pages/category-group/types/category-type'
-// import Card from '@/shared/components/ui/card'
-import { Button } from '@data-collection-suite/ui'
-import InputCustom from '@/shared/components/ui/input'
-import { AppCard } from '@data-collection-suite/ui'
+import { AppCard, AppSearchInput, Button } from '@data-collection-suite/ui'
 
 const iconMap: Record<string, ReactNode> = {
   'fa fa-home': <HomeOutlined />,
@@ -57,8 +54,8 @@ const CategoryGroup = () => {
     fetchGroups()
   }
 
-  const handleGroupClick = (_group: CategoryGroupItem) => {
-    message.info('Category group card clicked')
+  const handleGroupClick = (group: CategoryGroupItem) => {
+    message.info(`Group selected: ${group.GroupName}`)
   }
 
   return (
@@ -69,26 +66,26 @@ const CategoryGroup = () => {
           <div className="flex flex-wrap items-end gap-4">
           <div className="w-64">
             <label className="mb-1 block text-sm font-bold text-slate-700">Group Name</label>
-            <InputCustom
+            <AppSearchInput
               placeholder="Search by group name"
               value={groupName}
-              onChange={(e) => { setGroupName(e.target.value); handleFilterChange() }}
+              onChange={(value) => { setGroupName(value); handleFilterChange() }}
             />
           </div>
           <div className="w-64">
             <label className="mb-1 block text-sm font-bold text-slate-700">Group Code</label>
-            <InputCustom
+            <AppSearchInput
               placeholder="Search by group code"
               value={groupCode}
-              onChange={(e) => { setGroupCode(e.target.value); handleFilterChange() }}
+              onChange={(value) => { setGroupCode(value); handleFilterChange() }}
             />
           </div>
           <div className="w-64">
             <label className="mb-1 block text-sm font-bold text-slate-700">Icon</label>
-            <InputCustom
+            <AppSearchInput
               placeholder="Search by icon"
               value={icon}
-              onChange={(e) => { setIcon(e.target.value); handleFilterChange() }}
+              onChange={(value) => { setIcon(value); handleFilterChange() }}
             />
           </div>
           <div className="flex gap-2">

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
-import { message, Input } from 'antd'
+import { message } from 'antd'
 import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
 import { fetchDepartments } from '@/features/pages/departments/services/department.service'
 import type { DepartmentItem } from '@/features/pages/departments/types/department'
-import { AppTable, Button } from '@data-collection-suite/ui'
+import { AppSearchInput, AppTable, Button } from '@data-collection-suite/ui'
 import { usePaginatedList } from '@data-collection-suite/hooks'
 
 const Department = () => {
@@ -95,12 +95,12 @@ const Department = () => {
       <div className="mb-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex flex-wrap items-end gap-4">
           <div className="w-64">
-            <Input
+            <label className="mb-1 block text-sm font-bold text-slate-700">Department Name</label>
+            <AppSearchInput
               placeholder="Search departments..."
               value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
+              onChange={setSearchInput}
               onPressEnter={handleSearch}
-              allowClear
             />
           </div>
           <Button type={'primary'} icon={<SearchOutlined />} onClick={handleSearch}>

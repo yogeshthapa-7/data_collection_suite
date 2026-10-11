@@ -4,9 +4,7 @@ import { ReloadOutlined, SearchOutlined } from '@ant-design/icons'
 import { fetchOrganizations } from '@/features/pages/organization/services/organization.service'
 import type { OrganizationItem } from '@/features/pages/organization/types/organization'
 // import Card from '@/shared/components/ui/card'
-import { Button } from '@data-collection-suite/ui'
-import InputCustom from '@/shared/components/ui/input'
-import { AppCard } from '@data-collection-suite/ui'
+import { AppCard, AppSearchInput, Button } from '@data-collection-suite/ui'
 
 const Organization = () => {
   const [data, setData] = useState<OrganizationItem[]>([])
@@ -40,8 +38,8 @@ const Organization = () => {
     fetchData(1, 10, '')
   }
 
-  const handleOrgClick = (_org: OrganizationItem) => {
-    message.info('Organization card clicked')
+  const handleOrgClick = (org: OrganizationItem) => {
+    message.info(`Organization selected: ${org.Title}`)
   }
 
   return (
@@ -51,10 +49,10 @@ const Organization = () => {
           <div className="flex flex-wrap items-end gap-4">
           <div className="w-64">
             <label className="mb-1 block text-sm font-bold text-slate-700">Organization Name</label>
-            <InputCustom
+            <AppSearchInput
               placeholder="Search organizations..."
               value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              onChange={setSearchText}
               onPressEnter={handleSearch}
             />
           </div>

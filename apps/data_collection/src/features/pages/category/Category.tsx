@@ -17,9 +17,7 @@ import { fetchCategories, getCategoryGroupSelectList } from '@/features/pages/ca
 import type { CategoryItem, CategoryGroupSelectItem } from '@/features/pages/category/types/category'
 // import Card from '@/shared/components/ui/card'
 // import type { CardDetail } from '@/shared/components/ui/card'
-import { Button } from '@data-collection-suite/ui'
-import InputCustom from '@/shared/components/ui/input'
-import { AppCard } from '@data-collection-suite/ui'
+import { AppCard, AppSearchInput, Button } from '@data-collection-suite/ui'
 
 type CardDetail = { label: string; value: ReactNode }
 
@@ -74,10 +72,10 @@ const Category = () => {
           <div className="flex flex-wrap items-end gap-4">
           <div className="w-64">
             <label className="mb-1 block text-sm font-bold text-black">Category Name</label>
-            <InputCustom
+            <AppSearchInput
               placeholder="Search by category name"
               value={categoryName}
-              onChange={(e) => { setCategoryName(e.target.value); handleFilterChange() }}
+              onChange={(value) => { setCategoryName(value); handleFilterChange() }}
             />
           </div>
           <div className="w-64">
@@ -98,10 +96,10 @@ const Category = () => {
           </div>
           <div className="w-64">
             <label className="mb-1 block text-sm font-bold text-black">Category Code</label>
-            <InputCustom
+            <AppSearchInput
               placeholder="Search by category code"
               value={categoryCode}
-              onChange={(e) => { setCategoryCode(e.target.value); handleFilterChange() }}
+              onChange={(value) => { setCategoryCode(value); handleFilterChange() }}
             />
           </div>
           <div className="flex gap-2">

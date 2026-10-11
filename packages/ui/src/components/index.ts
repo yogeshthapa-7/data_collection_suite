@@ -6,3 +6,5 @@ export { default as AppPagination } from './app-pagination';
 export type { AppPaginationProps } from './app-pagination';
 export { default as AppTable } from './app-table';
 export type { AppTableProps, ServerPaginationProps } from './app-table';
+export { default as AppSearchInput } from './app-search-input';
+export type { AppSearchInputProps } from './app-search-input';
