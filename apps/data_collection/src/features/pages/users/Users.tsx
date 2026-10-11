@@ -3,8 +3,7 @@ import { Spin, message, Input, Space } from 'antd'
 import { SearchOutlined, ReloadOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { fetchUsers } from '@/features/pages/users/services/users.service'
 import type { UserItem } from '@/features/pages/users/types/users'
-import UiTable from '@/shared/components/ui/ui-table'
-import { Button } from '@data-collection-suite/ui'
+import { AppTable, Button } from '@data-collection-suite/ui'
 
 const Users = () => {
   const [data, setData] = useState<UserItem[]>([])
@@ -125,7 +124,7 @@ const Users = () => {
         </div>
       </div>
       <Spin spinning={loading}>
-          <UiTable<UserItem>
+          <AppTable<UserItem>
           columns={columns}
           dataSource={data}
           rowKey={(record: UserItem) => String(record.UserId ?? record.SN)}

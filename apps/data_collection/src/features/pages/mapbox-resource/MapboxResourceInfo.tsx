@@ -5,8 +5,7 @@ import { fetchMapboxResources } from '@/features/pages/mapbox-resource/services/
 import type { MapboxResourceItem, MapboxResourceServerSearchResponse } from '@/features/pages/mapbox-resource/types/mapbox-resource'
 import { getLayerTypeLabel } from '@/features/pages/mapbox-resource/types/mapbox-resource'
 import { getResourceTypeLabel } from '@/features/pages/mapbox-resource/types/mapbox-resource'
-import UiTable from '@/shared/components/ui/ui-table'
-import { Button } from '@data-collection-suite/ui'
+import { AppTable, Button } from '@data-collection-suite/ui'
 
 const MapboxResourceInfo = () => {
   const [data, setData] = useState<MapboxResourceItem[]>([])
@@ -145,7 +144,7 @@ const MapboxResourceInfo = () => {
         </div>
       </div>
       <Spin spinning={loading}>
-        <UiTable<MapboxResourceItem>
+        <AppTable<MapboxResourceItem>
         columns={columns}
         dataSource={data}
         rowKey="MapboxResourceID"

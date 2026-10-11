@@ -3,8 +3,7 @@ import { Spin, message, Input, Space } from 'antd'
 import { SearchOutlined, ReloadOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { fetchDepartments } from '@/features/pages/departments/services/department.service'
 import type { DepartmentItem } from '@/features/pages/departments/types/department'
-import UiTable from '@/shared/components/ui/ui-table'
-import { Button } from '@data-collection-suite/ui'
+import { AppTable, Button } from '@data-collection-suite/ui'
 
 const Department = () => {
   const [data, setData] = useState<DepartmentItem[]>([])
@@ -119,7 +118,7 @@ const Department = () => {
         </div>
       </div>
       <Spin spinning={loading}>
-          <UiTable<DepartmentItem>
+          <AppTable<DepartmentItem>
           columns={columns}
           dataSource={data}
           rowKey="DepartmentID"

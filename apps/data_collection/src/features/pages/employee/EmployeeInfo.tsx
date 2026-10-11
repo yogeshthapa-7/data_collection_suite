@@ -3,8 +3,7 @@ import { Spin, message, Input, Space } from 'antd'
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons'
 import { fetchEmployees } from '@/features/pages/employee/services/employee.service'
 import type { EmployeeItem } from '@/features/pages/employee/types/employee'
-import UiTable from '@/shared/components/ui/ui-table'
-import { Button } from '@data-collection-suite/ui'
+import { AppTable, Button } from '@data-collection-suite/ui'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 const EmployeeInfo = () => {
@@ -137,7 +136,7 @@ const EmployeeInfo = () => {
         </div>
       </div>
       <Spin spinning={loading}>
-        <UiTable<EmployeeItem>
+        <AppTable<EmployeeItem>
           columns={columns}
           dataSource={data}
           rowKey={(record: EmployeeItem) => String(record.EmployeeInfoID ?? record.SN)}
