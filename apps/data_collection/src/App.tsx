@@ -23,6 +23,7 @@ function RootApp() {
         token: {
           colorPrimary: '#4F46E5',
           borderRadius: 12,
+          zIndexPopupBase: 10500,
           fontFamily: 'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
         },
         components: {

@@ -33,6 +33,9 @@ export interface CategoryItem {
   PublicFormSubTitle?: string
   PublicFormTitle?: string
   Description?: string
+  DisplayName?: string
+  LocalLabelName?: string
+  Regex?: string
   Status?: boolean
   CreatedAt?: string
 }
@@ -51,4 +54,22 @@ export interface CategoryGroupSelectItem {
 
 export interface CategoryGroupSelectResponse {
   data: CategoryGroupSelectItem[]
+}
+
+export interface CategorySavePayload {
+  SN: number
+  CategoryID: number
+  CategoryName: string
+  CategoryCode: string
+  OrderKey: number
+  DbTableName: string
+  CategoryGroupID: number
+  MapIconColor: string
+  Icon: string
+  PublicFormTitle: string
+  PublicFormSubTitle: string
+  ExpiryDate: string
+  DisplayName?: string
+  LocalLabelName?: string
+  Regex?: string
 }

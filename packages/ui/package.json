@@ -13,5 +13,9 @@
     "react-dom": "^19.0.0",
     "antd": "^6.0.0",
     "@ant-design/icons": "^6.0.0"
+  },
+  "dependencies": {
+    "@data-collection-suite/utils": "file:../utils",
+    "react-quill-new": "^3.8.3"
   }
 }

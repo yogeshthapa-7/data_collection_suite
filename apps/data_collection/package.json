@@ -21,7 +21,8 @@
     "react-redux": "^9.3.0",
     "react-router-dom": "^7.18.4",
     "@data-collection-suite/ui": "file:../../packages/ui",
-    "@data-collection-suite/hooks": "file:../../packages/hooks"
+    "@data-collection-suite/hooks": "file:../../packages/hooks",
+    "@data-collection-suite/utils": "file:../../packages/utils"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

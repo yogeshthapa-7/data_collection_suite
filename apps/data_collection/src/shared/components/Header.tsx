@@ -1,12 +1,12 @@
 import React from 'react'
-import { Dropdown, Avatar } from 'antd'
-import type { MenuProps } from 'antd'
+import { Avatar } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { getClientConfig } from '@/config/env'
 import type { LoginDetail } from '@/config/env'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { logout } from '@/auth/authSlice'
 import { UserOutlined } from '@ant-design/icons'
+import { AppDropdownMenu } from '@data-collection-suite/ui'
 
 const AppHeader: React.FC = () => {
   const navigate = useNavigate()
@@ -19,17 +19,9 @@ const AppHeader: React.FC = () => {
     navigate('/auth/login', { replace: true })
   }
 
-  const userMenuItems: MenuProps['items'] = [
-    {
-      key: 'profile',
-      label: 'View Profile',
-      onClick: () => navigate('/profile'),
-    },
-    {
-      key: 'logout',
-      label: 'Logout',
-      onClick: handleLogout,
-    },
+  const userMenuItems = [
+    { label: 'View Profile', onClick: () => navigate('/profile') },
+    { label: 'Logout', onClick: handleLogout },
   ]
 
   const logoUrl = clientConfig.logo
@@ -60,23 +52,26 @@ const AppHeader: React.FC = () => {
         </div>
       </div>
 
-      <Dropdown menu={{ items: userMenuItems }} placement="bottomRight" arrow>
-        <div className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-indigo-500/20">
-          <Avatar
-            size="large"
-            icon={<UserOutlined />}
-            className="bg-indigo-500/80 text-white"
-          >
-            {userName?.charAt(0)}
-          </Avatar>
+      <AppDropdownMenu
+        trigger={
+          <div className="flex cursor-pointer items-center gap-3 rounded-lg px-2 py-1.5 transition-colors hover:bg-indigo-500/20">
+            <Avatar
+              size="large"
+              icon={<UserOutlined />}
+              className="bg-indigo-500/80 text-white"
+            >
+              {userName?.charAt(0)}
+            </Avatar>
 
-          <div className="hidden flex-col justify-center sm:flex">
-            <span className="text-sm font-semibold leading-tight text-white">
-              {userName}
-            </span>
+            <div className="hidden flex-col justify-center sm:flex">
+              <span className="text-sm font-semibold leading-tight text-white">
+                {userName}
+              </span>
+            </div>
           </div>
-        </div>
-      </Dropdown>
+        }
+        items={userMenuItems}
+      />
     </header>
   )
 }
