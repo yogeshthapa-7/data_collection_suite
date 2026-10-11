@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react'
 import { message, Space } from 'antd'
-import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
+import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
 import { fetchUsers } from '@/features/pages/users/services/users.service'
 import type { UserItem } from '@/features/pages/users/types/users'
 import { AppSearchInput, AppTable, Button } from '@data-collection-suite/ui'
 import { usePaginatedList } from '@data-collection-suite/hooks'
+import { AppDrawer } from '@data-collection-suite/ui'
+import UserForm from './UserForm'
 
 const Users = () => {
   const [searchText, setSearchText] = useState('')
   const [searchInput, setSearchInput] = useState('')
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const {
     data,
@@ -19,6 +22,7 @@ const Users = () => {
     pageSize,
     setCurrentPage,
     setPageSize,
+    refetch,
   } = usePaginatedList<UserItem>({
     fetcher: ({ start, length }) =>
   fetchUsers(start / length + 1, length, searchText).then((r) => ({
@@ -110,6 +114,14 @@ const Users = () => {
               Clear
             </Button>
           </Space>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            className="ml-auto"
+            onClick={() => setDrawerOpen(true)}
+          >
+            Add New User
+          </Button>
         </div>
       </div>
 
@@ -125,6 +137,21 @@ const Users = () => {
         onPageSizeChange={setPageSize}
         scroll={{ x: 800 }}
       />
+      <AppDrawer
+      open={drawerOpen}
+      onClose={() => setDrawerOpen(false)}
+      title='Add New User'
+      subtitle='Create a new user'
+      width={520}
+      >
+        <UserForm
+          onCancel={() => setDrawerOpen(false)}
+          onSuccess={() => {
+            setDrawerOpen(false)
+            refetch()
+          }}
+        />
+      </AppDrawer>
     </div>
   )
 }

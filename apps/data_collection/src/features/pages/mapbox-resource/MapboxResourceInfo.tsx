@@ -1,15 +1,19 @@
 import { useEffect, useState } from 'react'
 import { message } from 'antd'
-import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
+import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
 import { fetchMapboxResources } from '@/features/pages/mapbox-resource/services/mapbox-resource.service'
 import type { MapboxResourceItem } from '@/features/pages/mapbox-resource/types/mapbox-resource'
 import { getLayerTypeLabel, getResourceTypeLabel } from '@/features/pages/mapbox-resource/types/mapbox-resource'
 import { AppSearchInput, AppTable, Button } from '@data-collection-suite/ui'
 import { usePaginatedList } from '@data-collection-suite/hooks'
+import { AppDrawer } from '@data-collection-suite/ui'
+import MapboxResourceForm from './MapboxResourceForm'
 
 const MapboxResourceInfo = () => {
   const [searchText, setSearchText] = useState('')
   const [searchInput, setSearchInput] = useState('')
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  
 
   const {
     data,
@@ -20,6 +24,7 @@ const MapboxResourceInfo = () => {
     pageSize,
     setCurrentPage,
     setPageSize,
+    refetch,
   } = usePaginatedList<MapboxResourceItem>({
     fetcher: ({ start, length }) =>
       fetchMapboxResources(start / length + 1, length, searchText).then((r) => ({
@@ -134,6 +139,14 @@ const MapboxResourceInfo = () => {
           <Button icon={<ReloadOutlined />} onClick={handleReset}>
             Clear
           </Button>
+          <Button
+          type={'primary'}
+          icon={<PlusOutlined />}
+          className='ml-auto'
+            onClick={() => setDrawerOpen(true)}
+          >
+            Add Mapbox Resource
+          </Button>
         </div>
       </div>
 
@@ -149,6 +162,21 @@ const MapboxResourceInfo = () => {
         onPageSizeChange={setPageSize}
         scroll={{ x: 1200 }}
       />
+      <AppDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        title="Add Mapbox Resource"
+        subtitle="Create New Mapbox Resource"
+        width={520}
+      >
+        <MapboxResourceForm 
+        onCancel={() => setDrawerOpen(false)}
+        onSuccess={() => {
+          setDrawerOpen(false)
+          refetch()
+        }}
+        />
+      </AppDrawer>
     </div>
   )
 }

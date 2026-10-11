@@ -12,12 +12,13 @@ import {
   TableOutlined,
   MoreOutlined,
   ReloadOutlined,
+  PlusOutlined,
 } from '@ant-design/icons'
 import { fetchCategories, getCategoryGroupSelectList } from '@/features/pages/category/services/category.service'
 import type { CategoryItem, CategoryGroupSelectItem } from '@/features/pages/category/types/category'
-// import Card from '@/shared/components/ui/card'
-// import type { CardDetail } from '@/shared/components/ui/card'
-import { AppCard, AppSearchInput, Button } from '@data-collection-suite/ui'
+import { Button } from '@data-collection-suite/ui'
+import { AppSearchInput, AppCard, AppDrawer } from '@data-collection-suite/ui'
+import CategoryForm from './CategoryForm'
 
 type CardDetail = { label: string; value: ReactNode }
 
@@ -28,6 +29,7 @@ const Category = () => {
   const [categoryName, setCategoryName] = useState('')
   const [categoryGroup, setCategoryGroup] = useState<number | undefined>()
   const [categoryCode, setCategoryCode] = useState('')
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const loadCategories = async () => {
     setLoading(true)
@@ -110,6 +112,14 @@ const Category = () => {
               Clear
             </Button>
           </div>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            className="ml-auto"
+            onClick={() => setDrawerOpen(true)}
+          >
+            Add New Category
+          </Button>
         </div>
         </div>
         <Row gutter={[16, 16]}>
@@ -189,6 +199,21 @@ const Category = () => {
           </div>
         )}
       </Spin>
+      <AppDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        title="Add Category"
+        subtitle="Create a new category"
+        width={560}
+      >
+        <CategoryForm
+          onCancel={() => setDrawerOpen(false)}
+          onSuccess={() => {
+            setDrawerOpen(false)
+            loadCategories()
+          }}
+        />
+      </AppDrawer>
     </div>
   )
 }

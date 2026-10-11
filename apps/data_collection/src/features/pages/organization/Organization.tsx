@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react'
 import { Row, Col, Spin, message, Typography } from 'antd'
-import { ReloadOutlined, SearchOutlined } from '@ant-design/icons'
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons'
 import { fetchOrganizations } from '@/features/pages/organization/services/organization.service'
 import type { OrganizationItem } from '@/features/pages/organization/types/organization'
 // import Card from '@/shared/components/ui/card'
 import { AppCard, AppSearchInput, Button } from '@data-collection-suite/ui'
+import { AppDrawer } from '@data-collection-suite/ui';
+import OrganizationForm from './OrganizationForm';
 
 const Organization = () => {
   const [data, setData] = useState<OrganizationItem[]>([])
   const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const fetchData = async (page: number = 1, pageSize: number = 10, search: string = '') => {
     setLoading(true)
@@ -62,6 +65,14 @@ const Organization = () => {
             </Button>
             <Button icon={<ReloadOutlined />} onClick={handleReset}>Clear</Button>
           </div>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            className="ml-auto"
+            onClick={() => setDrawerOpen(true)}
+          >
+            Add New Organization
+          </Button>
         </div>
         </div>
         <Row gutter={[16, 16]}>
@@ -107,6 +118,20 @@ const Organization = () => {
           </div>
         )}
       </Spin>
+      <AppDrawer
+        title="Add New Organization"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        width={600}
+      >
+        <OrganizationForm 
+        onCancel={() => setDrawerOpen(false)}
+        onSuccess={() => {
+          setDrawerOpen(false);
+          fetchData(1, 10, searchText);
+        }}
+        />
+      </AppDrawer>
     </div>
   )
 }

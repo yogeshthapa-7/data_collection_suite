@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react'
 import { message } from 'antd'
-import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
+import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
 import { fetchDepartments } from '@/features/pages/departments/services/department.service'
 import type { DepartmentItem } from '@/features/pages/departments/types/department'
 import { AppSearchInput, AppTable, Button } from '@data-collection-suite/ui'
 import { usePaginatedList } from '@data-collection-suite/hooks'
+import { AppDrawer } from '@data-collection-suite/ui'
+import DepartmentForm from './DepartmentForm'
 
 const Department = () => {
   const [searchText, setSearchText] = useState('')
   const [searchInput, setSearchInput] = useState('')
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const {
     data,
@@ -19,6 +22,7 @@ const Department = () => {
     pageSize,
     setCurrentPage,
     setPageSize,
+    refetch,
   } = usePaginatedList<DepartmentItem>({
    fetcher: ({ start, length }) =>
      fetchDepartments(start / length + 1, length, searchText).then((r) => ({
@@ -109,6 +113,14 @@ const Department = () => {
           <Button icon={<ReloadOutlined />} onClick={handleReset}>
             Clear
           </Button>
+             <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            className="ml-auto"
+            onClick={() => setDrawerOpen(true)}
+          >
+            Add New Department
+          </Button>
         </div>
       </div>
 
@@ -124,6 +136,21 @@ const Department = () => {
         onPageSizeChange={setPageSize}
         scroll={{ x: 800 }}
       />
+            <AppDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        title="Add Department"
+        subtitle="Create a new department"
+        width={520}
+      >
+        <DepartmentForm
+          onCancel={() => setDrawerOpen(false)}
+          onSuccess={() => {
+            setDrawerOpen(false)
+            refetch()          // from usePaginatedList — refreshes the table
+          }}
+        />
+      </AppDrawer>
     </div>
   )
 }

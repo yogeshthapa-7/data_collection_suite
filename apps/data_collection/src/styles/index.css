@@ -1,5 +1,7 @@
 @import "tailwindcss";
+@source "../../../../packages/ui/src/**/*.{ts,tsx}";
 
+/* Table row hover highlight for AntD tables inside AppTable. */
 .app-table-highlight .ant-table-tbody > tr > td {
   transition: background-color 0.15s ease;
 }
@@ -7,5 +9,34 @@
 .app-table-highlight .ant-table-tbody > tr:hover > td,
 .app-table-highlight .ant-table-tbody > tr > td.ant-table-cell-row-hover {
   background-color: #dbeafe !important;
-  border-bottom-color: #e2e8f0 !important;
+}
+
+/* Drawer scrollbar - purple on the light drawer panel */
+.drawer-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 58, 237, 0.4) transparent;
+}
+
+.drawer-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.drawer-scrollbar::-webkit-scrollbar-track {
+  background: rgba(241, 245, 249, 0.7);
+  border-radius: 6px;
+}
+
+.drawer-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.4) 0%, rgba(168, 85, 247, 0.4) 100%);
+  border-radius: 6px;
+}
+
+.drawer-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.6) 0%, rgba(168, 85, 247, 0.6) 100%);
+}
+
+/* AntD Form validation text inside the light drawer */
+.drawer-form .ant-form-item-explain-error {
+  color: #b91c1c !important;
 }

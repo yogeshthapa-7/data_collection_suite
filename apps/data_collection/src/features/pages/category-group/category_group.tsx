@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { Row, Col, Spin, message, Typography } from 'antd'
-import { SearchOutlined, HomeOutlined, CarryOutOutlined, HeartOutlined, ToolOutlined, BookOutlined, PhoneOutlined, ApartmentOutlined, ShoppingOutlined, ReloadOutlined } from '@ant-design/icons'
+import { SearchOutlined, HomeOutlined, CarryOutOutlined, HeartOutlined, ToolOutlined, BookOutlined, PhoneOutlined, ApartmentOutlined, ShoppingOutlined, ReloadOutlined, PlusOutlined } from '@ant-design/icons'
 import { fetchCategoryGroups } from '@/features/pages/category-group/services/category-group.service'
 import type {
   // CategoryGroupServerSearchRequest,
   CategoryGroupItem,
 } from '@/features/pages/category-group/types/category-type'
 import { AppCard, AppSearchInput, Button } from '@data-collection-suite/ui'
+import { AppDrawer } from '@data-collection-suite/ui'
+import CategoryGroupForm from './CategoryGroupForm'
 
 const iconMap: Record<string, ReactNode> = {
   'fa fa-home': <HomeOutlined />,
@@ -26,6 +28,7 @@ const CategoryGroup = () => {
   const [groupName, setGroupName] = useState('')
   const [groupCode, setGroupCode] = useState('')
   const [icon, setIcon] = useState('')
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const getIcon = (icon?: string) => {
     if (!icon) return <HomeOutlined />
@@ -96,6 +99,14 @@ const CategoryGroup = () => {
               Clear
             </Button>
           </div>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            className="ml-auto"
+            onClick={() => setDrawerOpen(true)}
+          >
+            Add New Category-Group
+          </Button>
         </div>
         </div>
         <Row gutter={[16, 16]}>
@@ -145,6 +156,21 @@ const CategoryGroup = () => {
           </div>
         )}
       </Spin>
+
+      <AppDrawer
+        title="Add New Category Group"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        width={520}
+      >
+        <CategoryGroupForm 
+        onCancel={() => setDrawerOpen(false)}
+        onSuccess={() =>{
+          setDrawerOpen(false)
+          fetchGroups()
+        }}
+        />
+      </AppDrawer>
     </div>
   )
 }

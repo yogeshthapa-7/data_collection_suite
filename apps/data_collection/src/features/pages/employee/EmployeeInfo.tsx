@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react'
 import { message } from 'antd'
-import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
+import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
 import { fetchEmployees } from '@/features/pages/employee/services/employee.service'
 import type { EmployeeItem } from '@/features/pages/employee/types/employee'
 import { AppSearchInput, AppTable, Button } from '@data-collection-suite/ui'
 import { usePaginatedList } from '@data-collection-suite/hooks'
+import { AppDrawer } from '@data-collection-suite/ui'
+import EmployeeForm from './EmployeeForm'
 
 const EmployeeInfo = () => {
   const [searchText, setSearchText] = useState('')
   const [searchInput, setSearchInput] = useState('')
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const {
     data,
@@ -19,6 +22,7 @@ const EmployeeInfo = () => {
     pageSize,
     setCurrentPage,
     setPageSize,
+    refetch,
   } = usePaginatedList<EmployeeItem>({
     fetcher: ({ start, length }) =>
       fetchEmployees(start / length + 1, length, searchText).then((r) => ({
@@ -126,6 +130,12 @@ const EmployeeInfo = () => {
           <Button icon={<ReloadOutlined />} onClick={handleReset}>
             Clear
           </Button>
+          <Button
+          type={'primary'}
+          icon={<PlusOutlined />}
+          className='ml-auto'
+          onClick={() => setDrawerOpen(true)}
+          >Add New Employee</Button>
         </div>
       </div>
 
@@ -141,6 +151,21 @@ const EmployeeInfo = () => {
         onPageSizeChange={setPageSize}
         scroll={{ x: 1200 }}
       />
+      <AppDrawer
+        title="Add New Employee"
+        subtitle='Create new employee'
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        width={520}
+      >
+        <EmployeeForm
+          onCancel={() => setDrawerOpen(false)}
+          onSuccess={() => {
+            setDrawerOpen(false)
+            refetch()
+          }}
+        />
+      </AppDrawer>
     </div>
   )
 }
