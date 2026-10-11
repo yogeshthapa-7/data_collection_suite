@@ -129,8 +129,8 @@ const EmployeeInfo = () => {
             <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
               Search
             </Button>
-            <Button icon={<ReloadOutlined />} onClick={handleReset}>
-              Reset
+            <Button onClick={handleReset}>
+              Clear
             </Button>
           </Space>
         </div>

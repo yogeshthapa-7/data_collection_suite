@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Row, Col, Spin, message, Select, Dropdown } from 'antd'
+import { useState, useEffect, type ReactNode } from 'react'
+import { Row, Col, Spin, message, Select, Dropdown, Typography } from 'antd'
 import {
   SearchOutlined,
   FileTextOutlined,
@@ -14,10 +14,13 @@ import {
 } from '@ant-design/icons'
 import { fetchCategories, getCategoryGroupSelectList } from '@/features/pages/category/services/category.service'
 import type { CategoryItem, CategoryGroupSelectItem } from '@/features/pages/category/types/category'
-import Card from '@/shared/components/ui/card'
-import type { CardDetail } from '@/shared/components/ui/card'
+// import Card from '@/shared/components/ui/card'
+// import type { CardDetail } from '@/shared/components/ui/card'
 import { Button } from '@data-collection-suite/ui'
 import InputCustom from '@/shared/components/ui/input'
+import { AppCard } from '@data-collection-suite/ui'
+
+const { Text, Title } = Typography
 
 const Category = () => {
   const [categories, setCategories] = useState<CategoryItem[]>([])
@@ -125,16 +128,29 @@ const Category = () => {
 
             return (
               <Col xs={24} sm={12} md={12} lg={8} key={category.CategoryID}>
-                <Card
-                  title={category.CategoryName}
-                  details={details}
-                  className="h-full"
-                  action={
+                <AppCard className="h-full" hover onClick={() => handleCategoryClick(category)}>
+                  <div className="mb-4 flex items-start justify-between">
+                    <Typography.Title level={5} className="!mb-0 !font-semibold !text-gray-800">
+                      {category.CategoryName}
+                    </Typography.Title>
                     <Button size="small" type="primary" icon={<FileTextOutlined />}>
                       Open Form
                     </Button>
-                  }
-                >
+                  </div>
+
+                  <div className="space-y-2.5">
+                    {details.map((item, index) => (
+                      <div key={index} className="flex items-center justify-between gap-3 text-sm">
+                        <Typography.Text type="secondary" className="shrink-0">
+                          {item.label}
+                        </Typography.Text>
+                        <div className="truncate text-right font-medium text-gray-700">
+                          {item.value}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
                   <div className="border-b border-slate-200 my-3" />
                   <div className="flex items-center justify-between pt-2">
                     <div className="flex gap-2">
@@ -162,7 +178,7 @@ const Category = () => {
                       <Button size="small" icon={<MoreOutlined />} />
                     </Dropdown>
                   </div>
-                </Card>
+                </AppCard>
               </Col>
             )
           })}

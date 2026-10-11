@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Row, Col, Spin, message } from 'antd'
+import { Row, Col, Spin, message, Typography } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import { fetchOrganizations } from '@/features/pages/organization/services/organization.service'
 import type { OrganizationItem } from '@/features/pages/organization/types/organization'
-import Card from '@/shared/components/ui/card'
+// import Card from '@/shared/components/ui/card'
 import { Button } from '@data-collection-suite/ui'
 import InputCustom from '@/shared/components/ui/input'
+import { AppCard } from '@data-collection-suite/ui'
 
 const Organization = () => {
   const [data, setData] = useState<OrganizationItem[]>([])
@@ -62,29 +63,40 @@ const Organization = () => {
         </div>
         </div>
         <Row gutter={[16, 16]}>
-          {data.map((org) => {
-            const details = [
-              { label: 'Pareent Organization Name', value: org.ParentOrganizationName || 'None' },
-              { label: 'Organization ID', value: org.ParentOrganizationID || '' },
-              
-            ]
+                    {data.map((org) => (
+            <Col xs={24} sm={12} md={12} lg={8} key={org.OrganizationID}>
+              <AppCard className="h-full" hover onClick={() => handleOrgClick(org)}>
+                <Typography.Title
+                  level={5}
+                  className="!mb-2 !text-lg !font-bold !text-gray-800"
+                >
+                  {org.Title}
+                </Typography.Title>
 
-            return (
-              <Col xs={24} sm={12} md={12} lg={8} key={org.OrganizationID}>
-                <Card title={org.Title} details={details} className="h-full">
-                  <div className="border-b border-slate-200 my-3" />
-                  <div className="flex justify-end gap-2 pt-2">
-                    <Button size="small" style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}>
-                      Edit
-                    </Button>
-                    <Button size="small" danger>
-                      Delete
-                    </Button>
-                  </div>
-                </Card>
-              </Col>
-            )
-          })}
+                <div className="border-t border-slate-300" />
+
+                <div className="flex items-center justify-between py-3">
+                  <Typography.Text type="secondary" className="text-sm">
+                    Parent Organization Name
+                  </Typography.Text>
+                  <span className="text-sm font-medium text-gray-800">
+                    {org.ParentOrganizationName || 'None'}
+                  </span>
+                </div>
+
+                <div className="border-t border-slate-300" />
+
+                <div className="flex justify-end gap-2 pt-3">
+                  <Button size="small" style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}>
+                    Edit
+                  </Button>
+                  <Button size="small" danger>
+                    Delete
+                  </Button>
+                </div>
+              </AppCard>
+            </Col>
+          ))}
         </Row>
 
         {!loading && data.length === 0 && (

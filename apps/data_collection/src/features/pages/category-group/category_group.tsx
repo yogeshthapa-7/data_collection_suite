@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
-import { Row, Col, Spin, message } from 'antd'
+import { Row, Col, Spin, message, Typography } from 'antd'
 import { SearchOutlined, HomeOutlined, CarryOutOutlined, HeartOutlined, ToolOutlined, BookOutlined, PhoneOutlined, ApartmentOutlined, ShoppingOutlined } from '@ant-design/icons'
 import { fetchCategoryGroups } from '@/features/pages/category-group/services/category-group.service'
 import type {
   // CategoryGroupServerSearchRequest,
   CategoryGroupItem,
 } from '@/features/pages/category-group/types/category-type'
-import Card from '@/shared/components/ui/card'
+// import Card from '@/shared/components/ui/card'
 import { Button } from '@data-collection-suite/ui'
 import InputCustom from '@/shared/components/ui/input'
+import { AppCard } from '@data-collection-suite/ui'
 
 const iconMap: Record<string, ReactNode> = {
   'fa fa-home': <HomeOutlined />,
@@ -100,12 +101,17 @@ const CategoryGroup = () => {
           {groups.map((group) => {
             return (
               <Col xs={24} sm={12} md={12} lg={8} key={group.CategoryGroupID}>
-                <Card
-                  title={group.GroupName}
-                  className="h-full"
-                  action={getIcon(group.Icon)}
-                >
-                  <div className="border-b border-slate-200 my-3" />
+                <AppCard className="h-full" hover onCLick={() => handleGroupClick(group)}>
+                  <div className="mb-4 flex items-start justify-between">
+                    <Typography.Title level={5} className="!mb-0 !font-semibold !text-gray-800">
+                      {group.GroupName}
+                    </Typography.Title>
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl shadow-md shrink-0"
+                         style={{ backgroundColor: '#64748b' }}>
+                      <span className="text-white text-lg">{getIcon(group.Icon)}</span>
+                    </div>
+                  </div>
+
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-slate-600">समूहको नाम:</span>
@@ -126,7 +132,7 @@ const CategoryGroup = () => {
                       </Button>
                     </div>
                   </div>
-                </Card>
+                </AppCard>
               </Col>
             )
           })}
