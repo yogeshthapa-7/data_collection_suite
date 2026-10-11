@@ -10,4 +10,8 @@ export default defineConfig({
       '@': path.resolve(import.meta.dirname, './src'),
     },
   },
+  server: {
+    port: 5173,
+    strictPort: true,   // fail if 5173 is taken, instead of jumping to 5174
+  },
 })

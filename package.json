@@ -6,16 +6,20 @@
     "packages/*"
   ],
   "scripts": {
- "data": "npm run dev --workspace=data_collection", 
- "project_management": "npm run dev --workspace=promanage", 
- "build": "npm run build --workspaces --if-present", 
- "build:data": "npm run build --workspace=apps/data_collection",
- "build:project_management": "npm run build --workspace=apps/promanage",
- "lint": "npm run lint --workspaces --if-present", 
- "lint:data": "npm run lint --workspace=apps/data_collection", 
- "lint:project_management": "npm run lint --workspace=apps/promanage", 
- "check": "npm run typecheck --workspaces --if-present",
- "check:data": "npm run typecheck --workspace=apps/data_collection",
- "check:project_management": "npm run typecheck --workspace=apps/promanage"
+    "data": "npm run dev --workspace=data_collection",
+    "project_management": "npm run dev --workspace=promanage",
+    "dev": "concurrently \"npm run data\" \"npm run project_management\"",
+    "build": "npm run build --workspaces --if-present",
+    "build:data": "npm run build --workspace=apps/data_collection",
+    "build:project_management": "npm run build --workspace=apps/promanage",
+    "lint": "npm run lint --workspaces --if-present",
+    "lint:data": "npm run lint --workspace=apps/data_collection",
+    "lint:project_management": "npm run lint --workspace=apps/promanage",
+    "check": "npm run typecheck --workspaces --if-present",
+    "check:data": "npm run typecheck --workspace=apps/data_collection",
+    "check:project_management": "npm run typecheck --workspace=apps/promanage"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.5"
   }
 }
