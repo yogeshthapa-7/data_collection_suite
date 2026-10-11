@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Spin, message, Input, Button, Space } from 'antd'
+import { Spin, message, Input, Space } from 'antd'
 import { SearchOutlined, ReloadOutlined } from '@ant-design/icons'
 import { fetchEmployees } from '@/features/pages/employee/services/employee.service'
 import type { EmployeeItem } from '@/features/pages/employee/types/employee'
 import UiTable from '@/shared/components/ui/ui-table'
-import CustomButton from '@/shared/components/ui/button'
+import { Button } from '@data-collection-suite/ui'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 
 const EmployeeInfo = () => {
@@ -95,20 +95,20 @@ const EmployeeInfo = () => {
       width: 160,
       render: (_: any, _record: EmployeeItem) => (
         <div className="flex items-center gap-2">
-          <CustomButton
+          <Button
             size="small"
             style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}
             icon={<EditOutlined />}
           >
             Edit
-          </CustomButton>
-          <CustomButton
+          </Button>
+          <Button
             size="small"
             danger
             icon={<DeleteOutlined />}
           >
             Delete
-          </CustomButton>
+          </Button>
         </div>
       ),
     },

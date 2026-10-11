@@ -16,7 +16,7 @@ import { fetchCategories, getCategoryGroupSelectList } from '@/features/pages/ca
 import type { CategoryItem, CategoryGroupSelectItem } from '@/features/pages/category/types/category'
 import Card from '@/shared/components/ui/card'
 import type { CardDetail } from '@/shared/components/ui/card'
-import CustomButton from '@/shared/components/ui/button'
+import { Button } from '@data-collection-suite/ui'
 import InputCustom from '@/shared/components/ui/input'
 
 const Category = () => {
@@ -49,7 +49,7 @@ const Category = () => {
     const fetchGroups = async () => {
       try {
         const response = await getCategoryGroupSelectList()
-        console.log('Category group select list:', response)
+        // console.log('Category group select list:', response)
         setGroupOptions(response)
       } catch (error) {
         console.error('Failed to fetch category groups', error)
@@ -101,12 +101,12 @@ const Category = () => {
             />
           </div>
           <div className="flex gap-2">
-            <CustomButton type="primary" icon={<SearchOutlined />} onClick={handleFilterChange}>
+            <Button type="primary" icon={<SearchOutlined />} onClick={handleFilterChange}>
               Search
-            </CustomButton>
-            <CustomButton onClick={() => { setCategoryName(''); setCategoryGroup(undefined); setCategoryCode(''); setTimeout(handleFilterChange, 0) }}>
+            </Button>
+            <Button onClick={() => { setCategoryName(''); setCategoryGroup(undefined); setCategoryCode(''); setTimeout(handleFilterChange, 0) }}>
               Clear
-            </CustomButton>
+            </Button>
           </div>
         </div>
         </div>
@@ -130,20 +130,20 @@ const Category = () => {
                   details={details}
                   className="h-full"
                   action={
-                    <CustomButton size="small" type="primary" icon={<FileTextOutlined />}>
+                    <Button size="small" type="primary" icon={<FileTextOutlined />}>
                       Open Form
-                    </CustomButton>
+                    </Button>
                   }
                 >
                   <div className="border-b border-slate-200 my-3" />
                   <div className="flex items-center justify-between pt-2">
                     <div className="flex gap-2">
-                      <CustomButton size="small" style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }} icon={<EditOutlined />}>
+                      <Button size="small" style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }} icon={<EditOutlined />}>
                         Edit
-                      </CustomButton>
-                      <CustomButton size="small" danger icon={<DeleteOutlined />}>
+                      </Button>
+                      <Button size="small" danger icon={<DeleteOutlined />}>
                         Delete
-                      </CustomButton>
+                      </Button>
                     </div>
                     <Dropdown
                       menu={{
@@ -159,7 +159,7 @@ const Category = () => {
                       placement="bottomRight"
                       trigger={['click']}
                     >
-                      <CustomButton size="small" icon={<MoreOutlined />} />
+                      <Button size="small" icon={<MoreOutlined />} />
                     </Dropdown>
                   </div>
                 </Card>

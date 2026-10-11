@@ -20,6 +20,8 @@
     "check:project_management": "npm run typecheck --workspace=apps/promanage"
   },
   "devDependencies": {
-    "concurrently": "^9.2.5"
+    "concurrently": "^9.2.5",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7"
   }
 }

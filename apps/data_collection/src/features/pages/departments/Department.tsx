@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Spin, message, Input, Button, Space } from 'antd'
+import { Spin, message, Input, Space } from 'antd'
 import { SearchOutlined, ReloadOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { fetchDepartments } from '@/features/pages/departments/services/department.service'
 import type { DepartmentItem } from '@/features/pages/departments/types/department'
 import UiTable from '@/shared/components/ui/ui-table'
-import CustomButton from '@/shared/components/ui/button'
+import { Button } from '@data-collection-suite/ui'
 
 const Department = () => {
   const [data, setData] = useState<DepartmentItem[]>([])
@@ -77,20 +77,20 @@ const Department = () => {
       width: 160,
       render: (_: any, _record: DepartmentItem) => (
         <div className="flex items-center gap-2">
-          <CustomButton
+          <Button
             size="small"
             style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}
             icon={<EditOutlined />}
           >
             Edit
-          </CustomButton>
-          <CustomButton
+          </Button>
+          <Button
             size="small"
             danger
             icon={<DeleteOutlined />}
           >
             Delete
-          </CustomButton>
+          </Button>
         </div>
       ),
     },

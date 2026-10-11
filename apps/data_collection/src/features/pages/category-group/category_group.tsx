@@ -8,7 +8,7 @@ import type {
   CategoryGroupItem,
 } from '@/features/pages/category-group/types/category-type'
 import Card from '@/shared/components/ui/card'
-import CustomButton from '@/shared/components/ui/button'
+import { Button } from '@data-collection-suite/ui'
 import InputCustom from '@/shared/components/ui/input'
 
 const iconMap: Record<string, ReactNode> = {
@@ -87,12 +87,12 @@ const CategoryGroup = () => {
             />
           </div>
           <div className="flex gap-2">
-            <CustomButton type="primary" icon={<SearchOutlined />} onClick={handleFilterChange}>
+            <Button type="primary" icon={<SearchOutlined />} onClick={handleFilterChange}>
               Search
-            </CustomButton>
-            <CustomButton onClick={() => { setGroupName(''); setGroupCode(''); setIcon(''); setTimeout(handleFilterChange, 0) }}>
+            </Button>
+            <Button onClick={() => { setGroupName(''); setGroupCode(''); setIcon(''); setTimeout(handleFilterChange, 0) }}>
               Clear
-            </CustomButton>
+            </Button>
           </div>
         </div>
         </div>
@@ -118,12 +118,12 @@ const CategoryGroup = () => {
                       </div>
                     </div>
                     <div className="flex justify-end gap-2 pt-2">
-                      <CustomButton size="small" style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}>
+                      <Button size="small" style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}>
                         Edit
-                      </CustomButton>
-                      <CustomButton size="small" danger>
+                      </Button>
+                      <Button size="small" danger>
                         Delete
-                      </CustomButton>
+                      </Button>
                     </div>
                   </div>
                 </Card>

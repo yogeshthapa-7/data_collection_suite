@@ -4,7 +4,7 @@ import { SearchOutlined } from '@ant-design/icons'
 import { fetchOrganizations } from '@/features/pages/organization/services/organization.service'
 import type { OrganizationItem } from '@/features/pages/organization/types/organization'
 import Card from '@/shared/components/ui/card'
-import CustomButton from '@/shared/components/ui/button'
+import { Button } from '@data-collection-suite/ui'
 import InputCustom from '@/shared/components/ui/input'
 
 const Organization = () => {
@@ -54,10 +54,10 @@ const Organization = () => {
             />
           </div>
           <div className="flex gap-2">
-            <CustomButton type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
+            <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
               Search
-            </CustomButton>
-            <CustomButton onClick={handleReset}>Clear</CustomButton>
+            </Button>
+            <Button onClick={handleReset}>Clear</Button>
           </div>
         </div>
         </div>
@@ -81,12 +81,12 @@ const Organization = () => {
                 <Card title={org.OrganizationName} details={details} className="h-full">
                   <div className="border-b border-slate-200 my-3" />
                   <div className="flex justify-end gap-2 pt-2">
-                    <CustomButton size="small" style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}>
+                    <Button size="small" style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}>
                       Edit
-                    </CustomButton>
-                    <CustomButton size="small" danger>
+                    </Button>
+                    <Button size="small" danger>
                       Delete
-                    </CustomButton>
+                    </Button>
                   </div>
                 </Card>
               </Col>

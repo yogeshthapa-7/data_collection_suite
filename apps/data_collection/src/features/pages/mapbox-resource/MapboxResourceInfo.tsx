@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import { Spin, message, Input, Button, Space } from 'antd'
+import { Spin, message, Input, Space } from 'antd'
 import { SearchOutlined, ReloadOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { fetchMapboxResources } from '@/features/pages/mapbox-resource/services/mapbox-resource.service'
 import type { MapboxResourceItem, MapboxResourceServerSearchResponse } from '@/features/pages/mapbox-resource/types/mapbox-resource'
 import { getLayerTypeLabel } from '@/features/pages/mapbox-resource/types/mapbox-resource'
 import { getResourceTypeLabel } from '@/features/pages/mapbox-resource/types/mapbox-resource'
 import UiTable from '@/shared/components/ui/ui-table'
-import CustomButton from '@/shared/components/ui/button'
+import { Button } from '@data-collection-suite/ui'
 
 const MapboxResourceInfo = () => {
   const [data, setData] = useState<MapboxResourceItem[]>([])
@@ -103,20 +103,20 @@ const MapboxResourceInfo = () => {
       width: 160,
       render: (_: any, _record: MapboxResourceItem) => (
         <div className="flex items-center gap-2">
-          <CustomButton
+          <Button
             size="small"
             style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}
             icon={<EditOutlined />}
           >
             Edit
-          </CustomButton>
-          <CustomButton
+          </Button>
+          <Button
             size="small"
             danger
             icon={<DeleteOutlined />}
           >
             Delete
-          </CustomButton>
+          </Button>
         </div>
       ),
     },
