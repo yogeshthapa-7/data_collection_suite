@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Spin, message, Input, Space } from 'antd'
-import { SearchOutlined, ReloadOutlined } from '@ant-design/icons'
+import { SearchOutlined, ReloadOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { fetchUsers } from '@/features/pages/users/services/users.service'
 import type { UserItem } from '@/features/pages/users/types/users'
 import UiTable from '@/shared/components/ui/ui-table'
@@ -54,6 +54,8 @@ const Users = () => {
       dataIndex: 'SN',
       key: 'SN',
       width: 60,
+       render: (_: any, __: UserItem, index: number) =>
+      (pagination.current - 1) * pagination.pageSize + index + 1,
     },
     {
       title: 'User Name',
@@ -61,31 +63,42 @@ const Users = () => {
       key: 'UserName',
     },
     {
-      title: 'Email',
-      dataIndex: 'Email',
-      key: 'Email',
+      title: 'Full Name',
+      dataIndex: 'FullName',
+      key: 'FullName',
     },
     {
-      title: 'Phone Number',
-      dataIndex: 'PhoneNumber',
-      key: 'PhoneNumber',
+      title: 'User Group',
+      dataIndex: 'UserGroupName',
+      key: 'UserGroupName',
     },
     {
-      title: 'Role',
-      dataIndex: 'Role',
-      key: 'Role',
+      title: 'Theme',
+      dataIndex: 'Theme',
+      key: 'Theme',
     },
-    {
-      title: 'Status',
-      dataIndex: 'Status',
-      key: 'Status',
-      render: (status: boolean) => (status ? 'Active' : 'Inactive'),
-    },
-    {
-      title: 'Created At',
-      dataIndex: 'CreatedAt',
-      key: 'CreatedAt',
-      render: (date: string) => (date ? new Date(date).toLocaleDateString() : '-'),
+        {
+      title: 'Action',
+      key: 'action',
+      width: 160,
+      render: (_: any, _record: EmployeeItem) => (
+        <div className="flex items-center gap-2">
+          <Button
+            size="small"
+            style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}
+            icon={<EditOutlined />}
+          >
+            Edit
+          </Button>
+          <Button
+            size="small"
+            danger
+            icon={<DeleteOutlined />}
+          >
+            Delete
+          </Button>
+        </div>
+      ),
     },
   ]
 
@@ -115,7 +128,7 @@ const Users = () => {
           <UiTable<UserItem>
           columns={columns}
           dataSource={data}
-          rowKey="UserID"
+          rowKey={(record: UserItem) => String(record.UserId ?? record.SN)}
           pagination={{
             current: pagination.current,
             pageSize: pagination.pageSize,

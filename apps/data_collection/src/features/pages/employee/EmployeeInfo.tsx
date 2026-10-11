@@ -140,7 +140,7 @@ const EmployeeInfo = () => {
         <UiTable<EmployeeItem>
           columns={columns}
           dataSource={data}
-          rowKey="EmployeeID"
+          rowKey={(record: EmployeeItem) => String(record.EmployeeInfoID ?? record.SN)}
           pagination={{
             current: pagination.current,
             pageSize: pagination.pageSize,
