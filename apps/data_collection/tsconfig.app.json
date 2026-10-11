@@ -6,8 +6,9 @@
     "types": ["vite/client"],
     "paths": {
       "@/*": ["./src/*"],
-      "@data-collection-suite/ui": ["../../packages/ui/src/index.ts"]
+      "@data-collection-suite/ui": ["../../packages/ui/src/index.ts"],
+      "@data-collection-suite/hooks": ["../../packages/hooks/src/index.ts"]
     }
   },
-  "include": ["src", "../../packages/ui/src"]
+  "include": ["src", "../../packages/ui/src", "../../packages/hooks/src"]
 }

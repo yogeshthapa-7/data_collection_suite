@@ -20,7 +20,8 @@
     "react-hook-form": "^7.88.0",
     "react-redux": "^9.3.0",
     "react-router-dom": "^7.18.4",
-    "@data-collection-suite/ui": "file:../../packages/ui"
+    "@data-collection-suite/ui": "file:../../packages/ui",
+    "@data-collection-suite/hooks": "file:../../packages/hooks"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -7,4 +7,5 @@
 .app-table-highlight .ant-table-tbody > tr:hover > td,
 .app-table-highlight .ant-table-tbody > tr > td.ant-table-cell-row-hover {
   background-color: #dbeafe !important;
+  border-bottom-color: #e2e8f0 !important;
 }

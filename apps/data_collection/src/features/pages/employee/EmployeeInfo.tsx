@@ -1,52 +1,46 @@
-import { useState, useEffect } from 'react'
-import { Spin, message, Input, Space } from 'antd'
-import { SearchOutlined, ReloadOutlined } from '@ant-design/icons'
+import { useEffect, useState } from 'react'
+import { message, Input } from 'antd'
+import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
 import { fetchEmployees } from '@/features/pages/employee/services/employee.service'
 import type { EmployeeItem } from '@/features/pages/employee/types/employee'
 import { AppTable, Button } from '@data-collection-suite/ui'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { usePaginatedList } from '@data-collection-suite/hooks'
 
 const EmployeeInfo = () => {
-  const [data, setData] = useState<EmployeeItem[]>([])
-  const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 })
+  const [searchInput, setSearchInput] = useState('')
 
-  const fetchData = async (page: number = 1, pageSize: number = 10, search: string = '') => {
-    setLoading(true)
-    try {
-      const response = await fetchEmployees(page, pageSize, search)
-      setData(response.data || [])
-      setPagination({
-        current: page,
-        pageSize,
-        total: response.recordsTotal || 0,
-      })
-    } catch (error: any) {
-      const msg = error?.response?.data?.message || error?.message || 'Unknown error'
-      message.error(`Failed to fetch employees: ${msg}`)
-      console.error('Failed to fetch employees:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const {
+    data,
+    total,
+    loading,
+    error,
+    currentPage,
+    pageSize,
+    setCurrentPage,
+    setPageSize,
+  } = usePaginatedList<EmployeeItem>({
+    fetcher: ({ start, length }) =>
+      fetchEmployees(start / length + 1, length, searchText).then((r) => ({
+        items: (r.data || []).map((item, index) => ({ ...item, SN: start + index + 1 })),
+        total: r.recordsFiltered ?? r.recordsTotal ?? 0,
+      })),
+    extraDeps: [searchText],
+  })
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    if (error) message.error(error)
+  }, [error])
 
-  const handleTableChange = (pagination: any) => {
-    fetchData(pagination.current, pagination.pageSize, searchText)
+  const handleSearch =() => {
+    setSearchText(searchInput)
+    setCurrentPage(1)
   }
 
-  const handleSearch = () => {
-    fetchData(1, pagination.pageSize, searchText)
-  }
-
-  const handleReset = () => {
+  const handleReset = () =>{
+    setSearchInput('')
     setSearchText('')
-    fetchData(1, pagination.pageSize, '')
-  }
+    }
 
   const columns = [
     {
@@ -92,7 +86,7 @@ const EmployeeInfo = () => {
       title: 'Action',
       key: 'action',
       width: 160,
-      render: (_: any, _record: EmployeeItem) => (
+      render: () => (
         <div className="flex items-center gap-2">
           <Button
             size="small"
@@ -120,38 +114,33 @@ const EmployeeInfo = () => {
           <div className="w-64">
             <Input
               placeholder="Search employees..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
               onPressEnter={handleSearch}
+              allowClear
             />
           </div>
-          <Space>
-            <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
-              Search
-            </Button>
-            <Button onClick={handleReset}>
-              Clear
-            </Button>
-          </Space>
+          <Button type={"primary"} icon={<SearchOutlined />} onClick={handleSearch}>
+            Search
+          </Button>
+          <Button icon={<ReloadOutlined />} onClick={handleReset}>
+            Clear
+          </Button>
         </div>
       </div>
-      <Spin spinning={loading}>
-        <AppTable<EmployeeItem>
-          columns={columns}
-          dataSource={data}
-          rowKey={(record: EmployeeItem) => String(record.EmployeeInfoID ?? record.SN)}
-          pagination={{
-            current: pagination.current,
-            pageSize: pagination.pageSize,
-            total: pagination.total,
-            showSizeChanger: true,
-            showQuickJumper: true,
-            showTotal: (total) => `Total ${total} items`,
-          }}
-          onChange={handleTableChange}
-          scroll={{ x: 1200 }}
-        />
-      </Spin>
+
+      <AppTable<EmployeeItem>
+        columns={columns}
+        dataSource={data}
+        rowKey="EmployeeInfoID"
+        loading={loading}
+        total={total}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
+        scroll={{ x: 1200 }}
+      />
     </div>
   )
 }

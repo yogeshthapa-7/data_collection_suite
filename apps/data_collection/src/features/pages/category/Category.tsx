@@ -11,6 +11,7 @@ import {
   RocketOutlined,
   TableOutlined,
   MoreOutlined,
+  ReloadOutlined,
 } from '@ant-design/icons'
 import { fetchCategories, getCategoryGroupSelectList } from '@/features/pages/category/services/category.service'
 import type { CategoryItem, CategoryGroupSelectItem } from '@/features/pages/category/types/category'
@@ -20,7 +21,7 @@ import { Button } from '@data-collection-suite/ui'
 import InputCustom from '@/shared/components/ui/input'
 import { AppCard } from '@data-collection-suite/ui'
 
-const { Text, Title } = Typography
+type CardDetail = { label: string; value: ReactNode }
 
 const Category = () => {
   const [categories, setCategories] = useState<CategoryItem[]>([])
@@ -107,7 +108,7 @@ const Category = () => {
             <Button type="primary" icon={<SearchOutlined />} onClick={handleFilterChange}>
               Search
             </Button>
-            <Button onClick={() => { setCategoryName(''); setCategoryGroup(undefined); setCategoryCode(''); setTimeout(handleFilterChange, 0) }}>
+            <Button icon={<ReloadOutlined />} onClick={() => { setCategoryName(''); setCategoryGroup(undefined); setCategoryCode(''); setTimeout(handleFilterChange, 0) }}>
               Clear
             </Button>
           </div>
@@ -128,7 +129,7 @@ const Category = () => {
 
             return (
               <Col xs={24} sm={12} md={12} lg={8} key={category.CategoryID}>
-                <AppCard className="h-full" hover onClick={() => handleCategoryClick(category)}>
+                <AppCard className="h-full">
                   <div className="mb-4 flex items-start justify-between">
                     <Typography.Title level={5} className="!mb-0 !font-semibold !text-gray-800">
                       {category.CategoryName}

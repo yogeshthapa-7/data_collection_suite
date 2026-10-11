@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { Row, Col, Spin, message, Typography } from 'antd'
-import { SearchOutlined, HomeOutlined, CarryOutOutlined, HeartOutlined, ToolOutlined, BookOutlined, PhoneOutlined, ApartmentOutlined, ShoppingOutlined } from '@ant-design/icons'
+import { SearchOutlined, HomeOutlined, CarryOutOutlined, HeartOutlined, ToolOutlined, BookOutlined, PhoneOutlined, ApartmentOutlined, ShoppingOutlined, ReloadOutlined } from '@ant-design/icons'
 import { fetchCategoryGroups } from '@/features/pages/category-group/services/category-group.service'
 import type {
   // CategoryGroupServerSearchRequest,
@@ -57,6 +57,10 @@ const CategoryGroup = () => {
     fetchGroups()
   }
 
+  const handleGroupClick = (_group: CategoryGroupItem) => {
+    message.info('Category group card clicked')
+  }
+
   return (
     <div className="p-6">
 
@@ -91,7 +95,7 @@ const CategoryGroup = () => {
             <Button type="primary" icon={<SearchOutlined />} onClick={handleFilterChange}>
               Search
             </Button>
-            <Button onClick={() => { setGroupName(''); setGroupCode(''); setIcon(''); setTimeout(handleFilterChange, 0) }}>
+            <Button icon={<ReloadOutlined />} onClick={() => { setGroupName(''); setGroupCode(''); setIcon(''); setTimeout(handleFilterChange, 0) }}>
               Clear
             </Button>
           </div>
@@ -101,7 +105,7 @@ const CategoryGroup = () => {
           {groups.map((group) => {
             return (
               <Col xs={24} sm={12} md={12} lg={8} key={group.CategoryGroupID}>
-                <AppCard className="h-full" hover onCLick={() => handleGroupClick(group)}>
+                <AppCard className="h-full" hover onClick={() => handleGroupClick(group)}>
                   <div className="mb-4 flex items-start justify-between">
                     <Typography.Title level={5} className="!mb-0 !font-semibold !text-gray-800">
                       {group.GroupName}

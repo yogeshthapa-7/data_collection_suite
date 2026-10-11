@@ -19,7 +19,7 @@ export interface UserServerSearchRequest {
 
 export interface UserItem {
   SN?: number
-  UserID: number
+  UserId: number
   UserName: string
   Email?: string
   PhoneNumber?: string

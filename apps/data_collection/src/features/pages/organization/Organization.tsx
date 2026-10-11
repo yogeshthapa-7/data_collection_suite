@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Row, Col, Spin, message, Typography } from 'antd'
-import { SearchOutlined } from '@ant-design/icons'
+import { ReloadOutlined, SearchOutlined } from '@ant-design/icons'
 import { fetchOrganizations } from '@/features/pages/organization/services/organization.service'
 import type { OrganizationItem } from '@/features/pages/organization/types/organization'
 // import Card from '@/shared/components/ui/card'
@@ -40,6 +40,10 @@ const Organization = () => {
     fetchData(1, 10, '')
   }
 
+  const handleOrgClick = (_org: OrganizationItem) => {
+    message.info('Organization card clicked')
+  }
+
   return (
     <div className="p-6">
       <Spin spinning={loading}>
@@ -58,14 +62,14 @@ const Organization = () => {
             <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
               Search
             </Button>
-            <Button onClick={handleReset}>Clear</Button>
+            <Button icon={<ReloadOutlined />} onClick={handleReset}>Clear</Button>
           </div>
         </div>
         </div>
         <Row gutter={[16, 16]}>
                     {data.map((org) => (
             <Col xs={24} sm={12} md={12} lg={8} key={org.OrganizationID}>
-              <AppCard className="h-full" hover onClick={() => handleOrgClick(org)}>
+                <AppCard className="h-full" hover onClick={() => handleOrgClick(org)}>
                 <Typography.Title
                   level={5}
                   className="!mb-2 !text-lg !font-bold !text-gray-800"

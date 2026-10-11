@@ -1,52 +1,46 @@
-import { useState, useEffect } from 'react'
-import { Spin, message, Input, Space } from 'antd'
-import { SearchOutlined, ReloadOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { useEffect, useState } from 'react'
+import { message, Input } from 'antd'
+import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined } from '@ant-design/icons'
 import { fetchMapboxResources } from '@/features/pages/mapbox-resource/services/mapbox-resource.service'
-import type { MapboxResourceItem, MapboxResourceServerSearchResponse } from '@/features/pages/mapbox-resource/types/mapbox-resource'
-import { getLayerTypeLabel } from '@/features/pages/mapbox-resource/types/mapbox-resource'
-import { getResourceTypeLabel } from '@/features/pages/mapbox-resource/types/mapbox-resource'
+import type { MapboxResourceItem } from '@/features/pages/mapbox-resource/types/mapbox-resource'
+import { getLayerTypeLabel, getResourceTypeLabel } from '@/features/pages/mapbox-resource/types/mapbox-resource'
 import { AppTable, Button } from '@data-collection-suite/ui'
+import { usePaginatedList } from '@data-collection-suite/hooks'
 
 const MapboxResourceInfo = () => {
-  const [data, setData] = useState<MapboxResourceItem[]>([])
-  const [loading, setLoading] = useState(false)
   const [searchText, setSearchText] = useState('')
-  const [pagination, setPagination] = useState({ current: 1, pageSize: 10, total: 0 })
+  const [searchInput, setSearchInput] = useState('')
 
-  const fetchData = async (page: number = 1, pageSize: number = 10, search: string = '') => {
-    setLoading(true)
-    try {
-      const response: MapboxResourceServerSearchResponse = await fetchMapboxResources(page, pageSize, search)
-      setData(response.data || [])
-      setPagination({
-        current: page,
-        pageSize,
-        total: response.recordsTotal || 0,
-      })
-    } catch (error: any) {
-      const msg = error?.response?.data?.message || error?.message || 'Unknown error'
-      message.error(`Failed to fetch mapbox resources: ${msg}`)
-      console.error('Failed to fetch mapbox resources:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const {
+    data,
+    total,
+    loading,
+    error,
+    currentPage,
+    pageSize,
+    setCurrentPage,
+    setPageSize,
+  } = usePaginatedList<MapboxResourceItem>({
+    fetcher: ({ start, length }) =>
+      fetchMapboxResources(start / length + 1, length, searchText).then((r) => ({
+        items: (r.data || []).map((item, index) => ({ ...item, SN: start + index + 1 })),
+        total: r.recordsFiltered ?? r.recordsTotal ?? 0,
+      })),
+    extraDeps: [searchText],
+  })
 
   useEffect(() => {
-    fetchData()
-  }, [])
-
-  const handleTableChange = (pagination: any) => {
-    fetchData(pagination.current, pagination.pageSize, searchText)
-  }
+    if (error) message.error(error)
+  }, [error])
 
   const handleSearch = () => {
-    fetchData(1, pagination.pageSize, searchText)
+    setCurrentPage(1)
+    setSearchText(searchInput)
   }
 
   const handleReset = () => {
     setSearchText('')
-    fetchData(1, pagination.pageSize, '')
+    setSearchInput('')
   }
 
   const columns = [
@@ -65,7 +59,7 @@ const MapboxResourceInfo = () => {
       title: 'Category Code',
       dataIndex: 'CategoryCode',
       key: 'CategoryCode',
-      render: (value: string) => (value && value.trim() !== '.' ? value: ''),
+      render: (value: string) => (value && value.trim() !== '.' ? value : ''),
     },
     {
       title: 'Resource Type',
@@ -88,7 +82,7 @@ const MapboxResourceInfo = () => {
       title: 'Mapbox Name',
       dataIndex: 'MapboxName',
       key: 'MapboxName',
-      render: (value: string) => (value && value.trim() !== '.' ? value: ''),
+      render: (value: string) => (value && value.trim() !== '.' ? value : ''),
     },
     {
       title: 'Layer Type',
@@ -96,11 +90,11 @@ const MapboxResourceInfo = () => {
       key: 'LayerType',
       render: (id: number) => getLayerTypeLabel(id),
     },
-        {
+    {
       title: 'Action',
       key: 'action',
       width: 160,
-      render: (_: any, _record: MapboxResourceItem) => (
+      render: () => (
         <div className="flex items-center gap-2">
           <Button
             size="small"
@@ -128,38 +122,33 @@ const MapboxResourceInfo = () => {
           <div className="w-64">
             <Input
               placeholder="Search mapbox resources..."
-              value={searchText}
-              onChange={(e) => setSearchText(e.target.value)}
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
               onPressEnter={handleSearch}
+              allowClear
             />
           </div>
-          <Space>
-            <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
-              Search
-            </Button>
-            <Button onClick={handleReset}>
-              Clear
-            </Button>
-          </Space>
+           <Button type={'primary'} icon={<SearchOutlined />} onClick={handleSearch}>
+            Search
+          </Button>
+          <Button icon={<ReloadOutlined />} onClick={handleReset}>
+            Clear
+          </Button>
         </div>
       </div>
-      <Spin spinning={loading}>
-        <AppTable<MapboxResourceItem>
+
+      <AppTable<MapboxResourceItem>
         columns={columns}
         dataSource={data}
-        rowKey="MapboxResourceID"
-        pagination={{
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-          showSizeChanger: true,
-          showQuickJumper: true,
-          showTotal: (total) => `Total ${total} items`,
-        }}
-        onChange={handleTableChange}
+        rowKey="MapboxResourceInfoID"
+        loading={loading}
+        total={total}
+        currentPage={currentPage}
+        pageSize={pageSize}
+        onPageChange={setCurrentPage}
+        onPageSizeChange={setPageSize}
         scroll={{ x: 1200 }}
-        />
-      </Spin>
+      />
     </div>
   )
 }
