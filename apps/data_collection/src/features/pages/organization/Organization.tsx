@@ -64,21 +64,14 @@ const Organization = () => {
         <Row gutter={[16, 16]}>
           {data.map((org) => {
             const details = [
-              { label: 'Organization Code', value: org.OrganizationCode || '-' },
-              { label: 'Description', value: org.Description || '-' },
-              {
-                label: 'Status',
-                value: org.Status ? 'Active' : 'Inactive',
-              },
-              {
-                label: 'Created',
-                value: org.CreatedAt ? new Date(org.CreatedAt).toLocaleDateString() : '-',
-              },
+              { label: 'Pareent Organization Name', value: org.ParentOrganizationName || 'None' },
+              { label: 'Organization ID', value: org.ParentOrganizationID || '' },
+              
             ]
 
             return (
               <Col xs={24} sm={12} md={12} lg={8} key={org.OrganizationID}>
-                <Card title={org.OrganizationName} details={details} className="h-full">
+                <Card title={org.Title} details={details} className="h-full">
                   <div className="border-b border-slate-200 my-3" />
                   <div className="flex justify-end gap-2 pt-2">
                     <Button size="small" style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}>

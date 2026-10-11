@@ -18,13 +18,11 @@ export interface OrganizationServerSearchRequest {
 }
 
 export interface OrganizationItem {
-  SN?: number
+  SN: number
   OrganizationID: number
-  OrganizationName: string
-  OrganizationCode?: string
-  Description?: string
-  Status?: boolean
-  CreatedAt?: string
+  ParentOrganizationID: number
+  ParentOrganizationName: string
+  Title: string
 }
 
 export interface OrganizationServerSearchResponse {
