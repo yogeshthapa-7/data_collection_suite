@@ -15,7 +15,7 @@ export const categoryGroupServerSearch = async (
 
 export const fetchCategoryGroups = async (
     page: number = 1,
-    pageSize: number = 10,
+    pageSize: number = 12,
     search: string = ''
 ): Promise<CategoryGroupServerSearchResponse> => {
     const payload: CategoryGroupServerSearchRequest = {

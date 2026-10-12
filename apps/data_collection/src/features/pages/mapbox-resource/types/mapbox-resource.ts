@@ -10,6 +10,10 @@ export interface MapboxResourceServerSearchModel {
 
 export interface MapboxResourceServerSearchParam {
   MapboxResourceInfoId: number
+  ResourceName?: string
+  MapboxId?: string
+  CategoryCode?: string
+  ResourceType?: number
 }
 
 export interface MapboxResourceServerSearchRequest {
@@ -22,8 +26,25 @@ export interface MapboxResourceItem {
   MapboxResourceInfoID: number
   ResourceName: string
   ResourceCode?: string
+  MapboxId?: string
+  MapboxName?: string
   MapboxToken?: string
+  CategoryCode?: string
+  ResourceType?: number
+  LayerType?: number
+  UniqueFeatureKey?: string
   Description?: string
+}
+
+export interface MapboxResourceFormValues {
+  MapboxResourceInfoID?: number
+  MapboxName: string
+  MapboxId: string
+  ResourceName: string
+  CategoryCode: string
+  ResourceType: number
+  LayerType: number
+  UniqueFeatureKey: string
 }
 
 export interface MapboxResourceServerSearchResponse {
@@ -31,6 +52,13 @@ export interface MapboxResourceServerSearchResponse {
   recordsTotal: number
   recordsFiltered: number
   draw: number
+}
+
+export interface MapboxResourceFilterValues {
+  ResourceName?: string
+  MapboxId?: string
+  CategoryCode?: string
+  ResourceType?: number
 }
 
 export type LayerTypeId = 1 | 2 | 3
@@ -57,3 +85,8 @@ export const RESOURCE_TYPE_MAP: Record<number, string> ={
 export const getResourceTypeLabel = (id: number): string => {
   return RESOURCE_TYPE_MAP[id] ?? String(id)
 }
+
+export const RESOURCE_TYPE_OPTIONS: { value: number; label: string }[] = [
+  { value: 0, label: 'Select ResourceType' },
+  ...Object.entries(RESOURCE_TYPE_MAP).map(([value, label]) => ({ value: Number(value), label })),
+]

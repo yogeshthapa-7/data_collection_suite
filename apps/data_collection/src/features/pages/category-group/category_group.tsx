@@ -4,11 +4,11 @@ import { Row, Col, Spin, message, Typography } from 'antd'
 import { SearchOutlined, HomeOutlined, CarryOutOutlined, HeartOutlined, ToolOutlined, BookOutlined, PhoneOutlined, ApartmentOutlined, ShoppingOutlined, ReloadOutlined, PlusOutlined } from '@ant-design/icons'
 import { fetchCategoryGroups } from '@/features/pages/category-group/services/category-group.service'
 import type {
-  // CategoryGroupServerSearchRequest,
   CategoryGroupItem,
 } from '@/features/pages/category-group/types/category-type'
-import { AppCard, AppSearchInput, Button } from '@data-collection-suite/ui'
+import { AppCard, AppSearchInput, Button, AppPagination } from '@data-collection-suite/ui'
 import { AppDrawer } from '@data-collection-suite/ui'
+import { usePaginatedList } from '@data-collection-suite/hooks'
 import CategoryGroupForm from './CategoryGroupForm'
 
 const iconMap: Record<string, ReactNode> = {
@@ -23,38 +23,51 @@ const iconMap: Record<string, ReactNode> = {
 }
 
 const CategoryGroup = () => {
-  const [groups, setGroups] = useState<CategoryGroupItem[]>([])
-  const [loading, setLoading] = useState(false)
   const [groupName, setGroupName] = useState('')
   const [groupCode, setGroupCode] = useState('')
   const [icon, setIcon] = useState('')
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [appliedSearch, setAppliedSearch] = useState('')
+  const [drawerOpen, setDrawerOpen] = useState(false)
+
+  const {
+    data,
+    total,
+    loading,
+    error,
+    currentPage,
+    pageSize,
+    setCurrentPage,
+    setPageSize,
+    refetch,
+  } = usePaginatedList<CategoryGroupItem>({
+    fetcher: ({ start, length }) =>
+      fetchCategoryGroups(start / length + 1, length, appliedSearch).then((r) => ({
+        items: r.data || [],
+        total: r.recordsFiltered ?? r.recordsTotal ?? 0,
+      })),
+      extraDeps: [appliedSearch],
+  })
+
+  useEffect(() => {
+    if(error) message.error(error)
+  }, [error])
 
   const getIcon = (icon?: string) => {
     if (!icon) return <HomeOutlined />
     return iconMap[icon] || <HomeOutlined />
   }
 
-  const fetchGroups = async () => {
-    setLoading(true)
-    try {
-      const response = await fetchCategoryGroups(1, 12, '')
-      setGroups(response.data || [])
-    } catch (error: any) {
-      const msg = error?.response?.data?.message || error?.message || 'Unknown error'
-      message.error(`Failed to fetch category groups: ${msg}`)
-      console.error('Failed to fetch category groups:', error)
-    } finally {
-      setLoading(false)
-    }
+  const handleSearch = () => {
+    setAppliedSearch(groupName)
+    setCurrentPage(1)
   }
 
-  useEffect(() => {
-    fetchGroups()
-  }, [])
-
-  const handleFilterChange = () => {
-    fetchGroups()
+  const handleClear = () => {
+    setGroupName('')
+    setGroupCode('')
+    setIcon('')
+    setAppliedSearch('')
+    setCurrentPage(1)
   }
 
   const handleGroupClick = (group: CategoryGroupItem) => {
@@ -72,7 +85,7 @@ const CategoryGroup = () => {
             <AppSearchInput
               placeholder="Search by group name"
               value={groupName}
-              onChange={(value) => { setGroupName(value); handleFilterChange() }}
+              onChange={setGroupName}
             />
           </div>
           <div className="w-64">
@@ -80,7 +93,7 @@ const CategoryGroup = () => {
             <AppSearchInput
               placeholder="Search by group code"
               value={groupCode}
-              onChange={(value) => { setGroupCode(value); handleFilterChange() }}
+              onChange={setGroupCode}
             />
           </div>
           <div className="w-64">
@@ -88,14 +101,14 @@ const CategoryGroup = () => {
             <AppSearchInput
               placeholder="Search by icon"
               value={icon}
-              onChange={(value) => { setIcon(value); handleFilterChange() }}
+              onChange={setIcon}
             />
           </div>
           <div className="flex gap-2">
-            <Button type="primary" icon={<SearchOutlined />} onClick={handleFilterChange}>
+            <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
               Search
             </Button>
-            <Button icon={<ReloadOutlined />} onClick={() => { setGroupName(''); setGroupCode(''); setIcon(''); setTimeout(handleFilterChange, 0) }}>
+            <Button icon={<ReloadOutlined />} onClick={handleClear}>
               Clear
             </Button>
           </div>
@@ -110,7 +123,7 @@ const CategoryGroup = () => {
         </div>
         </div>
         <Row gutter={[16, 16]}>
-          {groups.map((group) => {
+          {data.map((group) => {
             return (
               <Col xs={24} sm={12} md={12} lg={8} key={group.CategoryGroupID}>
                 <AppCard className="h-full" hover onClick={() => handleGroupClick(group)}>
@@ -150,7 +163,15 @@ const CategoryGroup = () => {
           })}
         </Row>
 
-        {!loading && groups.length === 0 && (
+        <AppPagination
+           total={total}
+           currentPage={currentPage}
+           pageSize={pageSize}
+           onPageChange={setCurrentPage}
+           onPageSizeChange={setPageSize}
+        />
+
+        {!loading && data.length === 0 && (
           <div className="py-12 text-center text-slate-400">
             No category groups found
           </div>
@@ -168,7 +189,7 @@ const CategoryGroup = () => {
         onCancel={() => setDrawerOpen(false)}
         onSuccess={() =>{
           setDrawerOpen(false)
-          fetchGroups()
+          refetch()
         }}
         />
       </AppDrawer>

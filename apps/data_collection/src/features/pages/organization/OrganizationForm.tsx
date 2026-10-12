@@ -1,26 +1,69 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Form, message } from 'antd'
 import { AppInput, AppSelect, Button } from '@data-collection-suite/ui'
+import type { OrganizationSelectItem } from '@/features/pages/organization/types/organization'
+import { getOrganizationSelectList } from '@/features/pages/organization/services/organization.service'
 
 interface OrganizationFormValues {
   Title: string
-  ParentOrganizationID: number
+  ParentOrganizationID?: string
 }
 
 const OrganizationForm = ({
+  organization = null,
   onCancel,
   onSuccess,
 }: {
+  organization?: OrganizationItem | null
   onCancel: () => void
   onSuccess: () => void
 }) => {
+  const [form] = Form.useForm()
   const [saving, setSaving] = useState(false)
+  const [loadingOptions, setLoadingOptions] = useState(false)
+  const [organizations, setOrganizations] = useState<OrganizationSelectItem[]>([])
+
+  useEffect(() => {
+    let isMounted = true
+    const load = async () => {
+      setLoadingOptions(true)
+      const list = await getOrganizationSelectList()
+      if (!isMounted) return
+      setOrganizations(list)
+      setLoadingOptions(false)
+    }
+    load()
+    return () => { isMounted = false }
+  }, [])
+
+  useEffect(() => {
+    if (organization) {
+      form.setFieldsValue({
+        Title: organization.Title,
+        ParentOrganizationID: organization.ParentOrganizationID ? String(organization.ParentOrganizationID) : undefined,
+      })
+    } else {
+      form.resetFields()
+    }
+  }, [organization, form])
+
+  const parentOptions = [
+    { value: '', label: 'None (root organization)' },
+    ...organizations.map((item) => ({
+      value: String(item.OrganizationID),
+      label: item.Title,
+    })),
+  ]
 
   const handleFinish = async (values: OrganizationFormValues) => {
     setSaving(true)
     try {
-      // await saveOrganization(values)
-      message.success(`Organization created: ${values.Title}`)
+      // await saveOrganization({
+      //   OrganizationID: organization?.OrganizationID ?? 0,
+      //   Title: values.Title,
+      //   ParentOrganizationID: values.ParentOrganizationID ? Number(values.ParentOrganizationID) : 0,
+      // })
+      message.success(`Organization ${organization ? 'updated' : 'created'}: ${values.Title}`)
       onSuccess()
     } catch (error) {
       message.error(error instanceof Error ? error.message : 'Failed to save organization')
@@ -31,7 +74,7 @@ const OrganizationForm = ({
 
   return (
     <div className="drawer-form">
-      <Form layout="vertical" onFinish={handleFinish} requiredMark={false}>
+      <Form form={form} layout="vertical" onFinish={handleFinish} requiredMark={false}>
         <Form.Item name="Title" rules={[{ required: true, message: 'Organization name is required' }]}>
           <AppInput label="Organization Name" placeholder="Enter organization name" />
         </Form.Item>
@@ -40,10 +83,9 @@ const OrganizationForm = ({
           <AppSelect
             label="Parent Organization"
             placeholder="None (root organization)"
-            options={[
-              { value: 0, label: 'None' },
-              /* ...fetchOrganizations(1, 100, '').data.map(o => ({ value: o.OrganizationID, label: o.Title })) */
-            ]}
+            options={parentOptions}
+            loading={loadingOptions}
+            allowClear
           />
         </Form.Item>
 

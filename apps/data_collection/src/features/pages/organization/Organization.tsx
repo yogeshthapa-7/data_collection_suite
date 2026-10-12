@@ -3,42 +3,49 @@ import { Row, Col, Spin, message, Typography } from 'antd'
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons'
 import { fetchOrganizations } from '@/features/pages/organization/services/organization.service'
 import type { OrganizationItem } from '@/features/pages/organization/types/organization'
-// import Card from '@/shared/components/ui/card'
-import { AppCard, AppSearchInput, Button } from '@data-collection-suite/ui'
+import { AppCard, AppSearchInput, Button, AppPagination } from '@data-collection-suite/ui'
 import { AppDrawer } from '@data-collection-suite/ui';
+import { usePaginatedList } from '@data-collection-suite/hooks'
 import OrganizationForm from './OrganizationForm';
 
 const Organization = () => {
-  const [data, setData] = useState<OrganizationItem[]>([])
-  const [loading, setLoading] = useState(false)
-  const [searchText, setSearchText] = useState('')
+  const [searchInput, setSearchInput] = useState('')
+  const [appliedSearch, setAppliedSearch] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerOrg, setDrawerOrg] = useState<OrganizationItem | null>(null)
 
-  const fetchData = async (page: number = 1, pageSize: number = 10, search: string = '') => {
-    setLoading(true)
-    try {
-      const response = await fetchOrganizations(page, pageSize, search)
-      setData(response.data || [])
-    } catch (error: any) {
-      const msg = error?.response?.data?.message || error?.message || 'Unknown error'
-      message.error(`Failed to fetch organizations: ${msg}`)
-      console.error('Failed to fetch organizations:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const {
+    data,
+    total,
+    loading,
+    error,
+    currentPage,
+    pageSize,
+    setCurrentPage,
+    setPageSize,
+    refetch,
+  } = usePaginatedList<OrganizationItem>({
+    fetcher: ({ start, length }) =>
+      fetchOrganizations(start / length + 1, length, appliedSearch).then((r) => ({
+        items: r.data || [],
+        total: r.recordsFiltered ?? r.recordsTotal ?? 0,
+      })),
+    extraDeps: [appliedSearch],
+  })
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    if (error) message.error(error)
+  }, [error])
 
   const handleSearch = () => {
-    fetchData(1, 10, searchText)
+    setAppliedSearch(searchInput)
+    setCurrentPage(1)
   }
 
   const handleReset = () => {
-    setSearchText('')
-    fetchData(1, 10, '')
+    setSearchInput('')
+    setAppliedSearch('')
+    setCurrentPage(1)
   }
 
   const handleOrgClick = (org: OrganizationItem) => {
@@ -54,8 +61,8 @@ const Organization = () => {
             <label className="mb-1 block text-sm font-bold text-slate-700">Organization Name</label>
             <AppSearchInput
               placeholder="Search organizations..."
-              value={searchText}
-              onChange={setSearchText}
+              value={searchInput}
+              onChange={setSearchInput}
               onPressEnter={handleSearch}
             />
           </div>
@@ -93,14 +100,19 @@ const Organization = () => {
                     Parent Organization Name
                   </Typography.Text>
                   <span className="text-sm font-medium text-gray-800">
-                    {org.ParentOrganizationName || 'None'}
+                    {org.ParentOrganizationName || ' '}
                   </span>
                 </div>
 
                 <div className="border-t border-slate-300" />
 
                 <div className="flex justify-end gap-2 pt-3">
-                  <Button size="small" style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}>
+                  <Button size="small" 
+                  style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}
+                  onCLick={() => {
+                    setDrawerOrg(org)
+                    setDrawerOpen(true)
+                  }}>
                     Edit
                   </Button>
                   <Button size="small" danger>
@@ -112,6 +124,14 @@ const Organization = () => {
           ))}
         </Row>
 
+        <AppPagination
+          total={total}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
+        />
+
         {!loading && data.length === 0 && (
           <div className="py-12 text-center text-slate-400">
             No organizations found
@@ -119,16 +139,24 @@ const Organization = () => {
         )}
       </Spin>
       <AppDrawer
-        title="Add New Organization"
+        title={drawerOrg ? 'Edit Organization' : 'Add New Organization'}
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={() => {
+          setDrawerOpen(false)
+          setDrawerOrg(null)
+        }}
         width={600}
       >
         <OrganizationForm 
-        onCancel={() => setDrawerOpen(false)}
+        org={drawerOrg}
+        onCancel={() => {
+          setDrawerOpen(false)
+          setDrawerOrg(null)
+        }}
         onSuccess={() => {
-          setDrawerOpen(false);
-          fetchData(1, 10, searchText);
+          setDrawerOpen(false)
+          setDrawerOrg(null)
+          refetch()
         }}
         />
       </AppDrawer>

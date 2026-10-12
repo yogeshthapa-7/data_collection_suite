@@ -31,3 +31,8 @@ export interface OrganizationServerSearchResponse {
   recordsFiltered: number
   draw: number
 }
+
+export interface OrganizationSelectItem {
+  OrganizationID: number
+  Title: string
+}
