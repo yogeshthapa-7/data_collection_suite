@@ -20,14 +20,23 @@ export interface EmployeeServerSearchRequest {
 export interface EmployeeItem {
   SN?: number
   EmployeeInfoID: number
-  EmployeeName: string
-  EmployeeCode?: string
-  DepartmentName?: string
-  Designation?: string
-  Email?: string
-  PhoneNumber?: string
-  Status?: boolean
-  CreatedAt?: string
+  Fullname: string
+  Address: string
+  Phone: string
+  Email: string
+  DOB?: string
+  Gender: number
+  EmpStatus: number
+  DepartmentID: number
+  DepartmentName: string
+  BranchID: number
+  BranchName: string
+  MainBranchID: number
+  MainBranchName: string
+  OrganizationOfficeID: number
+  OrganizationOfficeName: string
+  Photo?: string
+  Status?: number
 }
 
 export interface EmployeeServerSearchResponse {
@@ -35,4 +44,27 @@ export interface EmployeeServerSearchResponse {
   recordsTotal: number
   recordsFiltered: number
   draw: number
+}
+
+export interface OrgOfficeItem {
+  OrganizationOfficeID: number
+  OrganizationOfficeName: string
+}
+
+export interface DepartmentItem {
+  DepartmentInfoID: number
+  DepartmentName: string
+}
+
+export interface MainBranchItem {
+  MainBranchID: number
+  MainBranchName: string
+  DepartmentID: number
+}
+
+export interface BranchItem {
+  BranchID: number
+  BranchName: string
+  MainBranchID: number
+  DepartmentID: number
 }

@@ -12,6 +12,7 @@ const Users = () => {
   const [searchText, setSearchText] = useState('')
   const [searchInput, setSearchInput] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerUser, setDrawerUser] = useState<UserItem | null>(null)
 
   const {
     data,
@@ -72,7 +73,7 @@ const Users = () => {
       title: 'Action',
       key: 'action',
       width: 160,
-      render: () => (
+      render: (record: UserItem) => (
         <div className="flex items-center gap-2">
           <Button
             size="small"
@@ -139,15 +140,21 @@ const Users = () => {
       />
       <AppDrawer
       open={drawerOpen}
-      onClose={() => setDrawerOpen(false)}
-      title='Add New User'
-      subtitle='Create a new user'
-      width={520}
+      onClose={() => {setDrawerOpen(false)
+        setDrawerUser(null)
+      }}
+       title={drawerUser ? 'Edit User' : 'Add New User'}
+        subtitle={drawerUser ? 'Update user details' : 'Create a new user'}
+        width={560}
       >
         <UserForm
-          onCancel={() => setDrawerOpen(false)}
+        user={drawerUser}
+          onCancel={() => {setDrawerOpen(false)
+            setDrawerUser(null)
+          }}
           onSuccess={() => {
             setDrawerOpen(false)
+            setDrawerUser(null)
             refetch()
           }}
         />

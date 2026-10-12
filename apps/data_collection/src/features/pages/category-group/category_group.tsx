@@ -38,7 +38,7 @@ const CategoryGroup = () => {
   const fetchGroups = async () => {
     setLoading(true)
     try {
-      const response = await fetchCategoryGroups(1, 10, '')
+      const response = await fetchCategoryGroups(1, 12, '')
       setGroups(response.data || [])
     } catch (error: any) {
       const msg = error?.response?.data?.message || error?.message || 'Unknown error'
@@ -159,6 +159,7 @@ const CategoryGroup = () => {
 
       <AppDrawer
         title="Add New Category Group"
+        subtitle="Create new category group here"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         width={520}

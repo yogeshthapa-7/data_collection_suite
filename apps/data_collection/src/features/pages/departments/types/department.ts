@@ -22,6 +22,8 @@ export interface DepartmentItem {
   DepartmentID: number
   DepartmentName: string
   DepartmentCode?: string
+  ParentDepartmentID?: number
+  ParentDepartmentName?: string
   Description?: string
   Status?: boolean
   CreatedAt?: string

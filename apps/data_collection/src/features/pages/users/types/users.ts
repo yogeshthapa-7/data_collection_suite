@@ -21,11 +21,24 @@ export interface UserItem {
   SN?: number
   UserId: number
   UserName: string
-  Email?: string
-  PhoneNumber?: string
-  Role?: string
-  Status?: boolean
-  CreatedAt?: string
+  FullName?: string
+  UserGroupId?: number
+  UserGroupCode?: string
+  UserGroupName?: string
+  OrganizationID?: number
+  OrganizationName?: string
+  Theme?: string
+}
+
+export interface UserFormValues {
+  UserId?: number
+  UserName: string
+  FullName: string
+  Password: string
+  ConfirmPassword: string
+  UserGroupId: string
+  OrganizationId: string
+  Theme?: string
 }
 
 export interface UserServerSearchResponse {
@@ -33,4 +46,15 @@ export interface UserServerSearchResponse {
   recordsTotal: number
   recordsFiltered: number
   draw: number
+}
+
+export interface UserGroupItem {
+  UserGroupId: number
+  UserGroupName: string
+  UserGroupCode: string
+}
+
+export interface OrganizationItem {
+  OrganizationID: number
+  OrganizationName: string
 }

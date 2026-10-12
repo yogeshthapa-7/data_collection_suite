@@ -1,20 +1,40 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Form, message } from 'antd'
 import { AppInput, Button } from '@data-collection-suite/ui'
+import type { DepartmentItem } from './types/department'
 
 interface DepartmentFormValues {
+  DepartmentID?: number
   DepartmentName: string
   DepartmentCode?: string
+  ParentDepartmentName?: string
 }
 
 const DepartmentForm = ({
+  department = null,
   onCancel,
   onSuccess,
 }: {
+  department?: DepartmentItem | null
   onCancel: () => void
   onSuccess: () => void
 }) => {
+  const [form] = Form.useForm()
   const [saving, setSaving] = useState(false)
+
+  useEffect(() => {
+    if(department) {
+      form.setFieldsValue({
+        DepartmentID: department.DepartmentID,
+        DepartmentName: department.DepartmentName,
+        DepartmentCode: department.DepartmentCOde,
+        // PerentDepartmentID: Department.ParenetDepartmentID,
+        ParentDepartmentName: department.ParentDepartmentName
+      })
+    }else{
+      form.resetFields()
+    }
+  }, [department, form])
 
   const handleFinish = async (values: DepartmentFormValues) => {
     setSaving(true)
@@ -33,6 +53,9 @@ const DepartmentForm = ({
   return (
     <div className="drawer-form">
       <Form layout="vertical" onFinish={handleFinish} requiredMark={false}>
+        <Form.Item name="DepartmentID" hidden>
+          <AppInput />
+        </Form.Item>
         <Form.Item
           name="DepartmentName"
           rules={[{ required: true, message: 'Department name is required' }]}
@@ -42,6 +65,10 @@ const DepartmentForm = ({
 
         <Form.Item name="DepartmentCode">
           <AppInput label="Department Code" placeholder="Enter department code" />
+        </Form.Item>
+
+        <Form.Item name="ParenetDepartmentName" >
+          <AppInput label ="Parent Department Name" placeholder ="Enter parent department name" />
         </Form.Item>
 
         <div className="mt-6 flex justify-end gap-2 border-t border-slate-200 pt-4">

@@ -37,3 +37,37 @@ export const userServerSearch = async (
   )
   return response.data
 }
+
+const toSelectRows = (data: unknown): Record<string, unknown>[] => {
+  if (Array.isArray(data))
+    return data as Record<string, unknown>[]
+  const wrapper = data as { data?: unknown[]; Data?: unlnown[] } | null
+  if (Array.isArray(wrapper?.data)) return wrapper.data as Record<string, unknown>[]
+  if (Array.isArray(wrapper?.Data)) return wrapper.Data as Record<string, unknown>[]
+  return[]
+}
+
+export const getUserGroupSelectList = async (): Promise<UserGroupItem[]> => {
+  try {
+    const response = await axios.get<unknown>(`${base_url}UserGroup/SelectList`)
+    return toSelectRows(response.data).map((item) => ({
+      UserGroupId: Number(item.UserGroupId ?? item.UserGroupID ?? item.Value ?? item.id ?? 0),
+      UserGroupName: String(item.UserGroupName ?? item.Name ?? item.name ?? item.Text ?? ''),
+      UserGroupCode: String(item.UserGroupCode ?? item.Code ?? ''),
+    }))
+  } catch {
+    return []
+  }
+}
+
+export const getOrganizationSelectList = async (): Promise<OrganizationItem[]> => {
+  try {
+    const response = await axios.get<unknown>(`${base_url}Organization/SelectList`)
+    return toSelectRows(response.data).map((item) => ({
+      OrganizationID: Number(item.OrganizationID ?? item.OrganizationOfficeID ?? item.Value ?? item.id ?? 0),
+      OrganizationName: String(item.OrganizationName ?? item.Title ?? item.Name ?? item.name ?? item.Text ?? ''),
+    }))
+  } catch {
+    return []
+  }
+}

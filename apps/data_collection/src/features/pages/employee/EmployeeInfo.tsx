@@ -156,7 +156,7 @@ const EmployeeInfo = () => {
         subtitle='Create new employee'
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
-        width={520}
+        width={700}
       >
         <EmployeeForm
           onCancel={() => setDrawerOpen(false)}

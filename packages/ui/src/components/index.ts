@@ -26,3 +26,5 @@ export { default as AppDropdownMenu } from './app-dropdown-menu';
 export type { AppDropdownMenuProps, AppDropdownMenuItem } from './app-dropdown-menu';
 export { default as AppColorPicker } from './app-color-picker';
 export type { AppColorPickerProps } from './app-color-picker';
+export { default as AppDocumentUpload } from './app-document-upload';
+export type { AppDocumentUploadProps } from './app-document-upload';
