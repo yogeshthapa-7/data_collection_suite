@@ -79,6 +79,10 @@ const Users = () => {
             size="small"
             style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}
             icon={<EditOutlined />}
+            onClick={() => {
+              setDrawerUser(record)
+              setDrawerOpen(true)
+            }}
           >
             Edit
           </Button>

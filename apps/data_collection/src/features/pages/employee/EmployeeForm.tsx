@@ -167,117 +167,135 @@ useEffect(() => {
           <AppInput />
         </Form.Item>
 
-        <div className="grid grid-cols-1 gap-x-6 md:grid-cols-2">
-          <Form.Item name="Fullname" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppInput label="Full Name" placeholder="Enter full name" />
-          </Form.Item>
+        <fieldset className="mb-5 rounded-lg border border-slate-200 p-4">
+          <legend className="ml-2 px-2 text-sm font-semibold text-slate-700">Personal Information</legend>
+          <div className="grid grid-cols-1 gap-x-6 md:grid-cols-2">
+            <Form.Item name="Fullname" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppInput label="Full Name" placeholder="Enter full name" />
+            </Form.Item>
 
-          <Form.Item name="Address" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppInput label="Address" placeholder="Enter address" rows={2} />
-          </Form.Item>
+            <Form.Item name="Address" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppInput label="Address" placeholder="Enter address" rows={2} />
+            </Form.Item>
 
-          <Form.Item name="Phone" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppInput label="Phone" placeholder="98XXXXXXXX" />
-          </Form.Item>
+            <Form.Item name="Phone" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppInput label="Phone" placeholder="98XXXXXXXX" />
+            </Form.Item>
 
-          <Form.Item
-            name="Email"
-            rules={[
-              { required: true, message: 'Required Field' },
-              { type: 'email', message: 'Enter a valid email' },
-            ]}
-          >
-            <AppInput label="Email" placeholder="employee@example.com" />
-          </Form.Item>
+            <Form.Item
+              name="Email"
+              rules={[
+                { required: true, message: 'Required Field' },
+                { type: 'email', message: 'Enter a valid email' },
+              ]}
+            >
+              <AppInput label="Email" placeholder="employee@example.com" />
+            </Form.Item>
 
-          <Form.Item name="Gender" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppSelect label="Gender" options={genderOptions} />
-          </Form.Item>
+            <Form.Item name="Gender" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppSelect label="Gender" options={genderOptions} />
+            </Form.Item>
 
-          <Form.Item name="DOB" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppNepaliDatePicker label="Date of Birth" returnEnglishDate style={{ width: '100%' }} />
-          </Form.Item>
+            <Form.Item name="DOB" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppNepaliDatePicker label="Date of Birth" returnEnglishDate style={{ width: '100%' }} />
+            </Form.Item>
 
-          <Form.Item name="EmpStatus" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppSelect label="Employee Status" options={statusOptions} />
-          </Form.Item>
+            <Form.Item name="Photo">
+              <AppDocumentUpload label="Photo" accept="image/*" onUpload={uploadEmployeePhoto} />
+            </Form.Item>
+          </div>
+        </fieldset>
 
-          <Form.Item name="Photo">
-            <AppDocumentUpload label="Photo" accept="image/*" onUpload={uploadEmployeePhoto} />
-          </Form.Item>
+        <fieldset className="mb-5 rounded-lg border border-slate-200 p-4">
+          <legend className="ml-2 px-2 text-sm font-semibold text-slate-700">Employee Details</legend>
+          <div className="grid grid-cols-1 gap-x-6 md:grid-cols-2">
+            <Form.Item name="EmpStatus" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppSelect label="Employee Status" options={statusOptions} />
+            </Form.Item>
+          </div>
+        </fieldset>
 
-          <Form.Item name="OrganizationOfficeID" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppSelect
-              label="Organization Office"
-              placeholder="Select office"
-              options={officeOptions}
-              loading={loadingOptions}
-              allowClear
-            />
-          </Form.Item>
+        <fieldset className="mb-5 rounded-lg border border-slate-200 p-4">
+          <legend className="ml-2 px-2 text-sm font-semibold text-slate-700">Organization Details</legend>
+          <div className="grid grid-cols-1 gap-x-6 md:grid-cols-2">
+            <Form.Item name="OrganizationOfficeID" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppSelect
+                label="Organization Office"
+                placeholder="Select office"
+                options={officeOptions}
+                loading={loadingOptions}
+                allowClear
+              />
+            </Form.Item>
 
-          <Form.Item name="DepartmentID" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppSelect
-              label="Department Name"
-              placeholder="Select department"
-              options={departmentOptions}
-              loading={loadingOptions}
-              allowClear
-              onChange={handleDepartmentChange}
-            />
-          </Form.Item>
+            <Form.Item name="DepartmentID" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppSelect
+                label="Department Name"
+                placeholder="Select department"
+                options={departmentOptions}
+                loading={loadingOptions}
+                allowClear
+                onChange={handleDepartmentChange}
+              />
+            </Form.Item>
 
-          <Form.Item name="MainBranchID" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppSelect
-              label="Main Branch"
-              placeholder="Select main branch"
-              options={mainBranchOptions}
-              loading={loadingOptions}
-              allowClear
-              onChange={handleMainBranchChange}
-            />
-          </Form.Item>
+            <Form.Item name="MainBranchID" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppSelect
+                label="Main Branch"
+                placeholder="Select main branch"
+                options={mainBranchOptions}
+                loading={loadingOptions}
+                allowClear
+                onChange={handleMainBranchChange}
+              />
+            </Form.Item>
 
-          <Form.Item name="BranchID" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppSelect
-              label="Branch"
-              placeholder="Select branch"
-              options={branchOptions}
-              loading={loadingOptions}
-              allowClear
-            />
-          </Form.Item>
+            <Form.Item name="BranchID" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppSelect
+                label="Branch"
+                placeholder="Select branch"
+                options={branchOptions}
+                loading={loadingOptions}
+                allowClear
+              />
+            </Form.Item>
+          </div>
+        </fieldset>
 
-          <Form.Item name="Username" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppInput label="Username" placeholder="Enter username" />
-          </Form.Item>
+        <fieldset className="mb-5 rounded-lg border border-slate-200 p-4">
+          <legend className="ml-2 px-2 text-sm font-semibold text-slate-700">Account Information</legend>
+          <div className="grid grid-cols-1 gap-x-6 md:grid-cols-2">
+            <Form.Item name="Username" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppInput label="Username" placeholder="Enter username" />
+            </Form.Item>
 
-          <Form.Item
-            name="Password"
-            rules={[
-              { required: true, message: 'Required Field' },
-              { min: 8, message: 'Password must be at least 8 characters long' },
-            ]}
-          >
-            <AppInput label="Password" type="password" placeholder="Enter password" />
-          </Form.Item>
+            <Form.Item
+              name="Password"
+              rules={[
+                { required: true, message: 'Required Field' },
+                { min: 8, message: 'Password must be at least 8 characters long' },
+              ]}
+            >
+              <AppInput label="Password" type="password" placeholder="Enter password" />
+            </Form.Item>
 
-          <Form.Item
-            name="ConfirmPassword"
-            dependencies={['Password']}
-            rules={[
-              { required: true, message: 'Required Field' },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue('Password') === value) return Promise.resolve()
-                  return Promise.reject(new Error('Password do not match'))
-                },
-              }),
-            ]}
-          >
-            <AppInput label="Confirm Password" type="password" placeholder="Re-enter password" />
-          </Form.Item>
-        </div>
+            <Form.Item
+              name="ConfirmPassword"
+              dependencies={['Password']}
+              rules={[
+                { required: true, message: 'Required Field' },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue('Password') === value) return Promise.resolve()
+                    return Promise.reject(new Error('Password do not match'))
+                  },
+                }),
+              ]}
+            >
+              <AppInput label="Confirm Password" type="password" placeholder="Re-enter password" />
+            </Form.Item>
+          </div>
+        </fieldset>
 
         <div className="mt-6 flex justify-end gap-2 border-t border-slate-200 pt-4">
           <Button variant="ghost" className="!text-slate-600 hover:!text-slate-900" onClick={() => form.resetFields()}>

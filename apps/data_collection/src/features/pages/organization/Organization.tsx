@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Row, Col, Spin, message, Typography } from 'antd'
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons'
 import { fetchOrganizations } from '@/features/pages/organization/services/organization.service'
-import type { OrganizationItem } from '@/features/pages/organization/types/organization'
+import type { OrganizationItem, OrganizationSelectItem } from '@/features/pages/organization/types/organization'
 import { AppCard, AppSearchInput, Button, AppPagination } from '@data-collection-suite/ui'
 import { AppDrawer } from '@data-collection-suite/ui';
 import { usePaginatedList } from '@data-collection-suite/hooks'
@@ -48,10 +48,6 @@ const Organization = () => {
     setCurrentPage(1)
   }
 
-  const handleOrgClick = (org: OrganizationItem) => {
-    message.info(`Organization selected: ${org.Title}`)
-  }
-
   return (
     <div className="p-6">
       <Spin spinning={loading}>
@@ -85,7 +81,7 @@ const Organization = () => {
         <Row gutter={[16, 16]}>
                     {data.map((org) => (
             <Col xs={24} sm={12} md={12} lg={8} key={org.OrganizationID}>
-                <AppCard className="h-full" hover onClick={() => handleOrgClick(org)}>
+                <AppCard className="h-full" hover >
                 <Typography.Title
                   level={5}
                   className="!mb-2 !text-lg !font-bold !text-gray-800"
@@ -109,7 +105,7 @@ const Organization = () => {
                 <div className="flex justify-end gap-2 pt-3">
                   <Button size="small" 
                   style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}
-                  onCLick={() => {
+                  onClick={() => {
                     setDrawerOrg(org)
                     setDrawerOpen(true)
                   }}>
@@ -148,7 +144,7 @@ const Organization = () => {
         width={600}
       >
         <OrganizationForm 
-        org={drawerOrg}
+        organization={drawerOrg}
         onCancel={() => {
           setDrawerOpen(false)
           setDrawerOrg(null)

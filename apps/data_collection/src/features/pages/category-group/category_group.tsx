@@ -28,6 +28,7 @@ const CategoryGroup = () => {
   const [icon, setIcon] = useState('')
   const [appliedSearch, setAppliedSearch] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerGroup, setDrawerGroup] = useState<CategoryGroupItem | null>(null)
 
   const {
     data,
@@ -149,7 +150,12 @@ const CategoryGroup = () => {
                       </div>
                     </div>
                     <div className="flex justify-end gap-2 pt-2">
-                      <Button size="small" style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}>
+                      <Button size="small" 
+                      style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}
+                      onClick={() => {
+                        setDrawerGroup(group);
+                        setDrawerOpen(true)
+                      }}>
                         Edit
                       </Button>
                       <Button size="small" danger>
@@ -179,16 +185,18 @@ const CategoryGroup = () => {
       </Spin>
 
       <AppDrawer
-        title="Add New Category Group"
-        subtitle="Create new category group here"
+         title={drawerGroup ? 'Edit Category Group' : 'Add New Category Group'}
+        subtitle={drawerGroup ? 'Update category group here' : 'Create new category group here'}
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={() => { setDrawerOpen(false); setDrawerGroup(null) }}
         width={520}
       >
         <CategoryGroupForm 
+         group={drawerGroup}
         onCancel={() => setDrawerOpen(false)}
         onSuccess={() =>{
           setDrawerOpen(false)
+          setDrawerGroup(null)
           refetch()
         }}
         />

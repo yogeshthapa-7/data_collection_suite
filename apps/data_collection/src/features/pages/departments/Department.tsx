@@ -12,6 +12,7 @@ const Department = () => {
   const [searchText, setSearchText] = useState('')
   const [searchInput, setSearchInput] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerDepartment, setDrawerDepartment] = useState<DepartmentItem | null>(null)
 
   const {
     data,
@@ -73,12 +74,16 @@ const Department = () => {
       title: 'Action',
       key: 'action',
       width: 160,
-      render: () => (
+      render: (record: DepartmentItem) => (
         <div className="flex items-center gap-2">
           <Button
             size="small"
             style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}
             icon={<EditOutlined />}
+            onCLick={() => {
+              setDrawerDepartment(record)
+              setDrawerOpen(true)
+            }}
           >
             Edit
           </Button>
@@ -138,14 +143,16 @@ const Department = () => {
       />
             <AppDrawer
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        title="Add Department"
-        subtitle="Create a new department"
+        onClose={() => { setDrawerOpen(false); setDrawerDepartment(null) }}
+        title={drawerDepartment ? 'Edit Department' : 'Add Department'}
+        subtitle={drawerDepartment ? 'Update department details' : 'Create a new department'}
         width={520}
       >
         <DepartmentForm
+          department={drawerDepartment}
           onCancel={() => setDrawerOpen(false)}
           onSuccess={() => {
+            setDrawerDepartment(null)
             setDrawerOpen(false)
             refetch()          // from usePaginatedList — refreshes the table
           }}

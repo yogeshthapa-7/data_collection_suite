@@ -115,71 +115,92 @@ const handleSubmit = async (values: CategoryFormValues) => {
           <AppInput />
         </Form.Item>
 
-        <div className="grid grid-cols-1 gap-x-4 md:grid-cols-2">
-          <Form.Item name="CategoryName" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppInput label="Category Name" placeholder="Enter category name" />
+        <fieldset className="mb-5 rounded-lg border border-slate-200 p-4">
+          <legend className="ml-2 px-2 text-sm font-semibold text-slate-700">Basic Information</legend>
+          <div className="grid grid-cols-1 gap-x-4 md:grid-cols-2">
+            <Form.Item name="CategoryName" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppInput label="Category Name" placeholder="Enter category name" />
+            </Form.Item>
+
+            <Form.Item name="CategoryCode" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppInput label="Category Code" placeholder="Enter category code" />
+            </Form.Item>
+
+            <Form.Item name="DbTableName" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppInput label="DB Column Name" placeholder="Enter DB column name" />
+            </Form.Item>
+
+            <Form.Item name="CategoryGroupID" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppSelect
+                label="Category Group"
+                placeholder="Select category group"
+                options={groupOptions.map((group) => ({
+                  value: group.CategoryGroupID,
+                  label: group.GroupName,
+                  style: {zIndex: 10001}
+                }))}
+              />
+            </Form.Item>
+          </div>
+        </fieldset>
+
+        <fieldset className="mb-5 rounded-lg border border-slate-200 p-4">
+          <legend className="ml-2 px-2 text-sm font-semibold text-slate-700">Label and Pattern</legend>
+          <div className="grid grid-cols-1 gap-x-4 md:grid-cols-2">
+            <Form.Item name="DisplayName" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppInput label="Display Name" placeholder="Enter display name" />
+            </Form.Item>
+
+            <Form.Item name="LocalLabelName" rules={[{ required: true, message: 'Required Field' }]}>
+              <AppInput label="Local Label Name" placeholder="Enter local label name" />
+            </Form.Item>
+
+            <Form.Item name="Regex">
+              <AppInput label="Regex" placeholder="Enter regex pattern" />
+            </Form.Item>
+          </div>
+        </fieldset>
+
+        <fieldset className="mb-5 rounded-lg border border-slate-200 p-4">
+          <legend className="ml-2 px-2 text-sm font-semibold text-slate-700">Appearance</legend>
+          <div className="grid grid-cols-1 gap-x-4 md:grid-cols-2">
+            <Form.Item name="Icon">
+              <AppSelect
+                label="Icon"
+                placeholder="Select icon"
+                options={FONT_ICONS.map((icon) => ({ value: icon, label: icon.replace('fa fa-', '') }))}
+              />
+            </Form.Item>
+
+            <Form.Item name="MapIconColor">
+              <AppColorPicker label="Map Icon Color" />
+            </Form.Item>
+          </div>
+        </fieldset>
+
+        <fieldset className="mb-5 rounded-lg border border-slate-200 p-4">
+          <legend className="ml-2 px-2 text-sm font-semibold text-slate-700">Configuration</legend>
+          <div className="grid grid-cols-1 gap-x-4 md:grid-cols-2">
+            <Form.Item name="OrderKey">
+              <AppInput label="Order Key" type="number" placeholder="0" />
+            </Form.Item>
+
+            <Form.Item name="ExpiryDate">
+              <AppNepaliDatePicker label="Form Expiry Date" returnEnglishDate style={{ width: '100%' }} />
+            </Form.Item>
+          </div>
+        </fieldset>
+
+        <fieldset className="mb-5 rounded-lg border border-slate-200 p-4">
+          <legend className="ml-2 px-2 text-sm font-semibold text-slate-700">Description</legend>
+          <Form.Item name="PublicFormTitle">
+            <AppRichTextEditor label="Title" placeholder="Enter public form title" />
           </Form.Item>
 
-          <Form.Item name="CategoryCode" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppInput label="Category Code" placeholder="Enter category code" />
+          <Form.Item name="PublicFormSubTitle">
+            <AppRichTextEditor label="Sub Title" placeholder="Enter public form sub title" />
           </Form.Item>
-
-          <Form.Item name="DbTableName" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppInput label="DB Column Name" placeholder="Enter DB column name" />
-          </Form.Item>
-
-          <Form.Item name="DisplayName" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppInput label="Display Name" placeholder="Enter display name" />
-          </Form.Item>
-
-          <Form.Item name="LocalLabelName" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppInput label="Local Label Name" placeholder="Enter local label name" />
-          </Form.Item>
-
-          <Form.Item name="Regex">
-            <AppInput label="Regex" placeholder="Enter regex pattern" />
-          </Form.Item>
-
-          <Form.Item name="Icon">
-            <AppSelect
-              label="Icon"
-              placeholder="Select icon"
-              options={FONT_ICONS.map((icon) => ({ value: icon, label: icon.replace('fa fa-', '') }))}
-            />
-          </Form.Item>
-
-          <Form.Item name="MapIconColor">
-            <AppColorPicker label="Map Icon Color" />
-          </Form.Item>
-
-          <Form.Item name="OrderKey">
-            <AppInput label="Order Key" type="number" placeholder="0" />
-          </Form.Item>
-
-          <Form.Item name="CategoryGroupID" rules={[{ required: true, message: 'Required Field' }]}>
-            <AppSelect
-              label="Category Group"
-              placeholder="Select category group"
-              options={groupOptions.map((group) => ({
-                value: group.CategoryGroupID,
-                label: group.GroupName,
-                style: {zIndex: 10001}
-              }))}
-            />
-          </Form.Item>
-
-          <Form.Item name="ExpiryDate">
-            <AppNepaliDatePicker label="Form Expiry Date" returnEnglishDate style={{ width: '100%' }} />
-          </Form.Item>
-        </div>
-
-        <Form.Item name="PublicFormTitle">
-          <AppRichTextEditor label="Title" placeholder="Enter public form title" />
-        </Form.Item>
-
-        <Form.Item name="PublicFormSubTitle">
-          <AppRichTextEditor label="Sub Title" placeholder="Enter public form sub title" />
-        </Form.Item>
+        </fieldset>
 
         <div className="mt-6 flex justify-end gap-2 border-t border-slate-200 pt-4">
           <Button variant="ghost" className="!text-slate-600 hover:!text-slate-900" onClick={handleReset}>

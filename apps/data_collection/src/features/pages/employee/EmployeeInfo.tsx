@@ -12,6 +12,7 @@ const EmployeeInfo = () => {
   const [searchText, setSearchText] = useState('')
   const [searchInput, setSearchInput] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerEmployee, setDrawerEmployee] = useState<EmployeeItem | null>(null)
 
   const {
     data,
@@ -90,12 +91,16 @@ const EmployeeInfo = () => {
       title: 'Action',
       key: 'action',
       width: 160,
-      render: () => (
+      render: (record: EmployeeItem) => (
         <div className="flex items-center gap-2">
           <Button
             size="small"
             style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}
             icon={<EditOutlined />}
+            onClick={() => {
+              setDrawerEmployee(record)
+              setDrawerOpen(true)
+            }}
           >
             Edit
           </Button>
@@ -152,15 +157,17 @@ const EmployeeInfo = () => {
         scroll={{ x: 1200 }}
       />
       <AppDrawer
-        title="Add New Employee"
-        subtitle='Create new employee'
+        title={drawerEmployee ? 'Edit Employee' : 'Add New Employee'}
+        subtitle={drawerEmployee ? 'Update employee details' : 'Create new employee'}
         open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={() => { setDrawerOpen(false); setDrawerEmployee(null) }}
         width={700}
       >
         <EmployeeForm
+           employee={drawerEmployee}
           onCancel={() => setDrawerOpen(false)}
           onSuccess={() => {
+            setDrawerEmployee(null)
             setDrawerOpen(false)
             refetch()
           }}
