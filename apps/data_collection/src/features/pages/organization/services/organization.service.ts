@@ -58,3 +58,40 @@ export const getOrganizationSelectList = async (): Promise<OrganizationSelectIte
     return []
   }
 }
+
+export const saveOrganization = async (
+  payload: OrganizationSavePayload
+): Promise<{ Success: boolean; Message?: string }> => {
+  const response = await axios.post<{ Success: boolean; Message?: string }>(
+    `${base_url}SaveOrganization`,
+    payload
+  )
+  const result = response.data
+  if (!result?.Success) {
+    throw new Error(result?.Message || 'Failed to save organization')
+  }
+  return result
+}
+
+export const buildOrganizationSavePayload = (values: {
+  OrganizationID?: number
+  Title: string
+  ParentOrganizationID?: number
+}): OrganizationSavePayload => ({
+  OrganizationID: values.OrganizationID ?? 0,
+  Title: values.Title,
+  ParentOrganizationID: values.ParentOrganizationID ?? 0,
+})
+
+export const deleteOrganization = async (
+  organizationId: number
+): Promise<{ Success: boolean; Message?: string }> => {
+  const response = await axios.get<{ Success: boolean; Message?: string }>(
+    `${base_url}DeleteOrganization?id=${organizationId}`
+  )
+  const result = response.data
+  if (!result?.Success) {
+    throw new Error(result?.Message || 'Failed to delete organization')
+  }
+  return result
+}

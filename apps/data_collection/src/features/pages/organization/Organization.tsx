@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Row, Col, Spin, message, Typography } from 'antd'
-import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons'
-import { fetchOrganizations } from '@/features/pages/organization/services/organization.service'
+import { Row, Col, Spin, message, Typography, Modal } from 'antd'
+import { DeleteOutlined, PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons'
+import { deleteOrganization, fetchOrganizations } from '@/features/pages/organization/services/organization.service'
 import type { OrganizationItem } from '@/features/pages/organization/types/organization'
 import { AppCard, AppSearchInput, Button, AppPagination } from '@data-collection-suite/ui'
 import { AppDrawer } from '@data-collection-suite/ui';
 import { usePaginatedList } from '@data-collection-suite/hooks'
 import OrganizationForm from './OrganizationForm';
+
 
 const Organization = () => {
   const [searchInput, setSearchInput] = useState('')
@@ -46,6 +47,25 @@ const Organization = () => {
     setSearchInput('')
     setAppliedSearch('')
     setCurrentPage(1)
+  }
+
+  const handleDelete = (organization: OrganizationItem) => {
+    Modal.confirm({
+      title: 'Delete Organization',
+      content: `Are you sure you want to delete ${organization.Title}`,
+      icon: <DeleteOutlined />,
+      okText: 'Delete',
+      okType: 'danger',
+      onOk: async () => {
+        try{
+          await deleteOrganization(organization.OrganizationID)
+          message.success('Organization deleted successfully')
+          refetch()
+        } catch {
+          message.error('Failed to delete organization')
+        }
+      },
+    })
   }
 
   return (
@@ -111,7 +131,7 @@ const Organization = () => {
                   }}>
                     Edit
                   </Button>
-                  <Button size="small" danger>
+                  <Button size="small" danger onClick={() => handleDelete(org)}>
                     Delete
                   </Button>
                 </div>

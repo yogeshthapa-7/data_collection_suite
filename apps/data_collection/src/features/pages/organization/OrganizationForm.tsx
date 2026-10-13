@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Form, message } from 'antd'
 import { AppInput, AppSelect, Button } from '@data-collection-suite/ui'
 import type { OrganizationItem, OrganizationSelectItem } from '@/features/pages/organization/types/organization'
-import { getOrganizationSelectList } from '@/features/pages/organization/services/organization.service'
+import { buildOrganizationSavePayload, getOrganizationSelectList, saveOrganization } from '@/features/pages/organization/services/organization.service'
 
 interface OrganizationFormValues {
   Title: string
@@ -58,11 +58,13 @@ const OrganizationForm = ({
   const handleFinish = async (values: OrganizationFormValues) => {
     setSaving(true)
     try {
-      // await saveOrganization({
-      //   OrganizationID: organization?.OrganizationID ?? 0,
-      //   Title: values.Title,
-      //   ParentOrganizationID: values.ParentOrganizationID ? Number(values.ParentOrganizationID) : 0,
-      // })
+     await saveOrganization(
+  buildOrganizationSavePayload({
+    OrganizationID: organization?.OrganizationID ?? 0,
+    Title: values.Title,
+    ParentOrganizationID: values.ParentOrganizationID ? Number(values.ParentOrganizationID) : 0,
+  })
+)
       message.success(`Organization ${organization ? 'updated' : 'created'}: ${values.Title}`)
       onSuccess()
     } catch (error) {

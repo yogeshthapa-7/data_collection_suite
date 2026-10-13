@@ -36,3 +36,9 @@ export interface OrganizationSelectItem {
   OrganizationID: number
   Title: string
 }
+
+export interface OrganizationSavePayload {
+  OrganizationID: number
+  Title: string
+  ParentOrganizationID: number
+}
