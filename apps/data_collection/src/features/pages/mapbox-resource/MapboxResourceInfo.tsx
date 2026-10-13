@@ -169,10 +169,10 @@ const MapboxResourceInfo = () => {
               Search
             </Button>
             <Button icon={<ReloadOutlined />} onClick={handleResetFilter}>
-              Reset
+              Clear
             </Button>
             <Button type="primary" icon={<PlusOutlined />} onClick={openNewDrawer}>
-              New
+              Add New Resource
             </Button>
             <Button type="primary" onClick={() => navigate('/mapbox-resource/upload-data-set')}>
               Upload Data Set

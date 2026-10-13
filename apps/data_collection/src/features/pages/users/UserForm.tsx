@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Form, message } from 'antd'
 import { AppInput, AppSelect, Button } from '@data-collection-suite/ui'
 import type { UserItem, UserGroupItem, OrganizationItem, UserFormValues } from '@/features/pages/users/types/users'
-import { getUserGroupSelectList, getOrganizationSelectList } from '@/features/pages/users/services/users.service'
+import { getUserGroupSelectList, getOrganizationSelectList, saveUser } from '@/features/pages/users/services/users.service'
 
 const UserForm = ({
   user = null,
@@ -24,6 +24,7 @@ const UserForm = ({
     const load = async () => {
       setLoadingOptions(true)
       const [groups, orgs] = await Promise.all([getUserGroupSelectList(), getOrganizationSelectList()])
+      // console.log('User Groups', groups, 'organizations', orgs)
       if (!isMounted) return
       setUserGroups(groups)
       setOrganizations(orgs)
@@ -34,7 +35,7 @@ const UserForm = ({
   }, [])
 
   useEffect(() => {
-    if (user) {
+    if (user && organizations.length > 0 && userGroups.length > 0) {
       form.setFieldsValue({
         UserId: user.UserId,
         UserName: user.UserName,
@@ -45,10 +46,10 @@ const UserForm = ({
         Password: '',
         ConfirmPassword: '',
       })
-    } else {
+    } else if (!user) {
       form.resetFields()
     }
-  }, [user, form])
+  }, [user, form, organizations, userGroups])
 
   const userGroupOptions = userGroups.map((item) => ({
     value: String(item.UserGroupId),
@@ -94,10 +95,7 @@ const UserForm = ({
         <div className="grid grid-cols-1 gap-x-6 md:grid-cols-2">
           <Form.Item
             name="UserName"
-            rules={[
-              { required: true, message: 'Required Field' },
-              { type: 'name', message: 'Enter a username' },
-            ]}
+            rules={[{ required: true, message: 'Required Field' }]}
           >
             <AppInput label="User Name" />
           </Form.Item>

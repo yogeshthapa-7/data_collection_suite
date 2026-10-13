@@ -80,7 +80,7 @@ const Department = () => {
             size="small"
             style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}
             icon={<EditOutlined />}
-            onCLick={() => {
+            onClick={() => {
               setDrawerDepartment(record)
               setDrawerOpen(true)
             }}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Form, message } from 'antd'
 import { AppInput, AppSelect, Button } from '@data-collection-suite/ui'
-import type { OrganizationSelectItem } from '@/features/pages/organization/types/organization'
+import type { OrganizationItem, OrganizationSelectItem } from '@/features/pages/organization/types/organization'
 import { getOrganizationSelectList } from '@/features/pages/organization/services/organization.service'
 
 interface OrganizationFormValues {

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Row, Col, Spin, message, Typography } from 'antd'
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons'
 import { fetchOrganizations } from '@/features/pages/organization/services/organization.service'
-import type { OrganizationItem, OrganizationSelectItem } from '@/features/pages/organization/types/organization'
+import type { OrganizationItem } from '@/features/pages/organization/types/organization'
 import { AppCard, AppSearchInput, Button, AppPagination } from '@data-collection-suite/ui'
 import { AppDrawer } from '@data-collection-suite/ui';
 import { usePaginatedList } from '@data-collection-suite/hooks'

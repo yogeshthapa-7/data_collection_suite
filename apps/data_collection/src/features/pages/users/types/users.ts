@@ -37,7 +37,7 @@ export interface UserFormValues {
   Password: string
   ConfirmPassword: string
   UserGroupId: string
-  OrganizationId: string
+  OrganizationID: string
   Theme?: string
 }
 

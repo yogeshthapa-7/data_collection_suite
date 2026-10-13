@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Form, message } from 'antd'
-import { AppInput, AppSelect, AppDatePicker, Button, AppNepaliDatePicker, AppDocumentUpload } from '@data-collection-suite/ui'
+import { AppInput, AppSelect, Button, AppNepaliDatePicker, AppDocumentUpload } from '@data-collection-suite/ui'
 import type { EmployeeItem, OrgOfficeItem, DepartmentItem, MainBranchItem, BranchItem } from '@/features/pages/employee/types/employee'
 import {
     getOrganizationOfficeSelectList,
@@ -53,8 +53,8 @@ const EmployeeForm = ({
   const [form] = Form.useForm()
   const [saving, setSaving] = useState(false)
 
-  const [genderOptions, setGenderOptions] = useState(GENDER_OPTIONS)
-  const [statusOptions, setStatusOptions] = useState(EMP_STATUS_OPTIONS)
+  const [genderOptions] = useState(GENDER_OPTIONS)
+  const [statusOptions] = useState(EMP_STATUS_OPTIONS)
 const [orgOffices, setOrgOffices] = useState<OrgOfficeItem[]>([])
 const [departments, setDepartments] = useState<DepartmentItem[]>([])
 const [mainBranches, setMainBranches] = useState<MainBranchItem[]>([])
@@ -175,7 +175,7 @@ useEffect(() => {
             </Form.Item>
 
             <Form.Item name="Address" rules={[{ required: true, message: 'Required Field' }]}>
-              <AppInput label="Address" placeholder="Enter address" rows={2} />
+              <AppInput label="Address" placeholder="Enter address" />
             </Form.Item>
 
             <Form.Item name="Phone" rules={[{ required: true, message: 'Required Field' }]}>

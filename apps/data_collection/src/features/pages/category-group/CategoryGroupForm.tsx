@@ -73,11 +73,11 @@ const CategoryGroupForm = ({
           <AppInput />
         </Form.Item>
 
-        <Form.Item name="CategoryGroupName" rules={[{ required: true, message: 'Required Field' }]}>
+        <Form.Item name="GroupName" rules={[{ required: true, message: 'Required Field' }]}>
           <AppInput label="Category Group Name" placeholder="Enter category group name" />
         </Form.Item>
 
-        <Form.Item name="CategoryGroupCode" rules={[{ required: true, message: 'Required Field' }]}>
+        <Form.Item name="GroupCode" rules={[{ required: true, message: 'Required Field' }]}>
           <AppInput label="Category Group Code" placeholder="Enter category group code" />
         </Form.Item>
 

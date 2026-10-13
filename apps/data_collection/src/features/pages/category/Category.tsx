@@ -1,5 +1,5 @@
 import { useState, useEffect, type ReactNode } from 'react'
-import { Row, Col, Spin, message, Typography } from 'antd'
+import { Row, Col, Spin, message, Typography, Modal } from 'antd'
 import {
   SearchOutlined,
   FileTextOutlined,
@@ -14,7 +14,7 @@ import {
   ReloadOutlined,
   PlusOutlined,
 } from '@ant-design/icons'
-import { fetchCategories, getCategoryGroupSelectList } from '@/features/pages/category/services/category.service'
+import { fetchCategories, getCategoryGroupSelectList, deleteCategory } from '@/features/pages/category/services/category.service'
 import type { CategoryItem, CategoryGroupSelectItem } from '@/features/pages/category/types/category'
 import { AppSelect, AppSearchInput, AppCard, AppDrawer, AppDropdownMenu, AppPagination, Button } from '@data-collection-suite/ui'
 import { convertAdToBs } from '@data-collection-suite/utils'
@@ -86,6 +86,25 @@ const Category = () => {
 
   const handleManageTable = (category: CategoryItem) => {
     message.info(`Manage table: ${category.CategoryName}`)
+  }
+
+  const handleDelete = (category: CategoryItem) => {
+    Modal.confirm({
+      title: 'Delete Category',
+      content: `Are you sure you want to delete ${category.CategoryName}?`,
+      icon: <DeleteOutlined />,
+      okText: 'Delete',
+      okType: 'danger',
+      onOk: async () => {
+        try{
+          await deleteCategory(category.CategoryID)
+          message.success('Category deleted successfully')
+            refetch()
+        } catch {
+          message.error('Failed to delete category')
+        }
+      },
+    })
   }
 
   return (
@@ -192,7 +211,7 @@ const Category = () => {
                       <Button size="small" style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }} icon={<EditOutlined />} onClick={() => { setEditingCategory(category); setDrawerOpen(true) }}>
                         Edit
                       </Button>
-                      <Button size="small" danger icon={<DeleteOutlined />}>
+                      <Button size="small" danger icon={<DeleteOutlined />} onClick={() => handleDelete(category)}>
                         Delete
                       </Button>
                     </div>

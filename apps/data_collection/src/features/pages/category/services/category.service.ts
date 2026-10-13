@@ -99,3 +99,16 @@ export const buildCategorySavePayload = (values: {
   ...(values.LocalLabelName ? { LocalLabelName: values.LocalLabelName } : {}),
   ...(values.Regex ? { Regex: values.Regex } : {}),
 })
+
+export const deleteCategory = async (
+  categoryId: number
+): Promise<{ Success: boolean; Message?: string }> => {
+  const response = await axios.get<{ Success: boolean; Message?: string }>(
+    `${base_url}DeleteCategory?CategoryID=${categoryId}`
+  )
+  const result = response.data
+  if (!result?.Success) {
+    throw new Error(result?.Message || 'Failed to delete category')
+  }
+  return result
+}

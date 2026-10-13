@@ -27,7 +27,7 @@ const DepartmentForm = ({
       form.setFieldsValue({
         DepartmentID: department.DepartmentID,
         DepartmentName: department.DepartmentName,
-        DepartmentCode: department.DepartmentCOde,
+        DepartmentCode: department.DepartmentCode,
         // PerentDepartmentID: Department.ParenetDepartmentID,
         ParentDepartmentName: department.ParentDepartmentName
       })
@@ -52,7 +52,7 @@ const DepartmentForm = ({
 
   return (
     <div className="drawer-form">
-      <Form layout="vertical" onFinish={handleFinish} requiredMark={false}>
+      <Form form={form} layout="vertical" onFinish={handleFinish} requiredMark={false}>
         <Form.Item name="DepartmentID" hidden>
           <AppInput />
         </Form.Item>
@@ -67,7 +67,7 @@ const DepartmentForm = ({
           <AppInput label="Department Code" placeholder="Enter department code" />
         </Form.Item>
 
-        <Form.Item name="ParenetDepartmentName" >
+        <Form.Item name="ParentDepartmentName" >
           <AppInput label ="Parent Department Name" placeholder ="Enter parent department name" />
         </Form.Item>
 
