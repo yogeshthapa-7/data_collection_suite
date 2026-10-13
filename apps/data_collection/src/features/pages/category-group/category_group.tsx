@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
-import { Row, Col, Spin, message, Typography } from 'antd'
-import { SearchOutlined, HomeOutlined, CarryOutOutlined, HeartOutlined, ToolOutlined, BookOutlined, PhoneOutlined, ApartmentOutlined, ShoppingOutlined, ReloadOutlined, PlusOutlined } from '@ant-design/icons'
-import { fetchCategoryGroups } from '@/features/pages/category-group/services/category-group.service'
+import { Row, Col, Spin, message, Typography, Modal } from 'antd'
+import { SearchOutlined, HomeOutlined, CarryOutOutlined, HeartOutlined, ToolOutlined, BookOutlined, PhoneOutlined, ApartmentOutlined, ShoppingOutlined, ReloadOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
+import { deleteCategoryGroup, fetchCategoryGroups } from '@/features/pages/category-group/services/category-group.service'
 import type {
   CategoryGroupItem,
 } from '@/features/pages/category-group/types/category-type'
@@ -73,6 +73,25 @@ const CategoryGroup = () => {
 
   const handleGroupClick = (group: CategoryGroupItem) => {
     message.info(`Group selected: ${group.GroupName}`)
+  }
+
+  const handleDelete = (group: CategoryGroupItem) => {
+    Modal.confirm({
+      title: 'Delete Category Group',
+      content: `Are you sure you want to delete ${CategoryGroup.CategoryGroupName}?`,
+      icon: <DeleteOutlined />,
+      okText: 'Delete',
+      okType: 'danger',
+      onOk: async () => {
+        try {
+          await deleteCategoryGroup(group.CategoryGroupID)
+          message.success('category Group deleted successfully')
+          refetch()
+        } catch {
+          message.error('Failed to delete category group')
+        }
+      },
+    })
   }
 
   return (
@@ -158,7 +177,7 @@ const CategoryGroup = () => {
                       }}>
                         Edit
                       </Button>
-                      <Button size="small" danger>
+                      <Button size="small" danger onClick={() => handleDelete(group)}>
                         Delete
                       </Button>
                     </div>

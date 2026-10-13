@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { CategoryGroupServerSearchRequest, CategoryGroupServerSearchResponse } from '@/features/pages/category-group/types/category-type'
+import type { categoryGroupSavePayload, CategoryGroupServerSearchRequest, CategoryGroupServerSearchResponse, CategoryGroupSavePayload } from '@/features/pages/category-group/types/category-type'
 
 const base_url = import.meta.env.VITE_BASE_URL
 
@@ -34,3 +34,42 @@ export const fetchCategoryGroups = async (
     }
     return categoryGroupServerSearch(payload)
 }
+
+export const deleteCategoryGroup = async (
+    categoryGroupId: number
+): Promise<{ Success: boolean; Message }> => {
+    const response = await axios.get<{ Success: boolean; Message?: string }>(
+        `${base_url}DeleteCategoryGroup?CategoryGroupID=${categoryGroupId}`
+    )
+    const result = response.data
+    if (!result?.Success) {
+        throw new Error(result?.Message || 'Failed to delete category group')
+    }
+    return result
+}
+
+export const saveCategoryGroup = async (
+    payload: categoryGroupSavePayload
+): Promise<{ Success: boolean; Message?: string }> => {
+    const response = await axios.post<{ Success: boolean; Message?: string }>(
+        `${base_url}SaveCategoryGroup`,
+        payload
+    )
+    const result = response.data
+    if (!result?.Success) {
+        throw new Error(result?.Message || 'Failed to save category group')
+    }
+    return result
+}
+
+export const buildCategoryGroupSavePayload = (values: {
+    CategoryGroupID?: number
+    GroupName: string
+    GroupCode?: string
+    Icon?: string
+}): CategoryGroupSavePayload => ({
+    CategoryGroupID: values.CategoryGroupID ?? 0,
+    GroupName: values.GroupName,
+    GroupCode: values.GroupCode ?? '',
+    Icon: values.Icon ?? '',
+})

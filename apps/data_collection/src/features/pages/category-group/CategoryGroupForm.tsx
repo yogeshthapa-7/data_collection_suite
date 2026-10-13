@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Form, message } from 'antd'
 import { AppInput, AppSelect, Button } from '@data-collection-suite/ui'
 import type { CategoryGroupItem } from '@/features/pages/category-group/types/category-type'
+import { saveCategoryGroup, buildCategoryGroupSavePayload } from '@/features/pages/category-group/services/category-group.service'
 
 // Stored values are the FontAwesome class strings — must match the iconMap keys
 // used to render the cards (category_group.tsx:14)
@@ -51,8 +52,8 @@ const CategoryGroupForm = ({
   const handleFinish = async (values: CategoryGroupFormValues) => {
     setSaving(true)
     try {
-      // await saveCategoryGroup(values)
-      message.success(`Group created: ${values.GroupName}`)
+      await saveCategoryGroup(buildCategoryGroupSavePayload(values))
+        message.success(`Group ${values.CategoryGroupID ? 'updated' : 'created'} successfully`)
       onSuccess()
     } catch (error) {
       message.error(error instanceof Error ? error.message : 'Failed to save group')

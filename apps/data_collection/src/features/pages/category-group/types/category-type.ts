@@ -32,3 +32,10 @@ export interface CategoryGroupServerSearchResponse {
   recordsFiltered: number
   draw: number
 }
+
+export interface categoryGroupSavePayload {
+  CategoryGroupID: number
+  GroupName: string
+  GroupCode: string
+  Icon: string
+}
