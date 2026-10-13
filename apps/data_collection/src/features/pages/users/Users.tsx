@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { message, Space } from 'antd'
+import { message, Space, Modal } from 'antd'
 import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
-import { fetchUsers } from '@/features/pages/users/services/users.service'
+import { fetchUsers, deleteUser } from '@/features/pages/users/services/users.service'
 import type { UserItem } from '@/features/pages/users/types/users'
 import { AppSearchInput, AppTable, Button } from '@data-collection-suite/ui'
 import { usePaginatedList } from '@data-collection-suite/hooks'
@@ -47,6 +47,24 @@ const Users = () => {
     setSearchText('')
     }
 
+  const handleDelete = (user: UserItem) =>{
+    Modal.confirm({
+      title: 'Delete Users',
+      content: `Are you sure you want to delete ${user.UserName}`,
+      okText: 'Delete',
+      okType: 'danger',
+      onOk: async () => {
+        try {
+          await deleteUser(user.UserId)
+          message.success('User deleted successfully')
+          refetch()
+        } catch {
+          message.error('Failed to delete user')
+        }
+      },
+    })
+  }
+
   const columns = [
     {
       title: 'SN',
@@ -90,6 +108,7 @@ const Users = () => {
             size="small"
             danger
             icon={<DeleteOutlined />}
+            onClick={() => handleDelete(record)}
           >
             Delete
           </Button>

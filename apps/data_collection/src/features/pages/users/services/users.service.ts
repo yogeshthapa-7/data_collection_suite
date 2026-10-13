@@ -86,3 +86,16 @@ export const saveUser = async (
   if (!result?.Success) throw new Error(result?.Message || 'Failed to save user')
   return result
 }
+
+export const deleteUser = async (
+  userId: number
+): Promise<{ Success: boolean; Message?: string }> => {
+  const response = await axios.get<{ Success: boolean; Message?: string }>(
+    `${base_url}DeleteUser?UserID=${userId}`
+  )
+  const result = response.data
+  if (!result?.Success) {
+    throw new Error(result?.Message || 'Failed to delete User')
+  }
+  return result
+}

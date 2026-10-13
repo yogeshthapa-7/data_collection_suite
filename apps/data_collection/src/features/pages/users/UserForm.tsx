@@ -65,29 +65,27 @@ const UserForm = ({
     setSaving(true)
     try {
       const group = userGroups.find((g) => String(g.UserGroupId) === values.UserGroupId)
-      const org = organizations.find((o) => String(o.OrganizationID) === values.OrganizationID)
+      // const org = organizations.find((o) => String(o.OrganizationID) === values.OrganizationID)
 
-      await saveUser({
-        UserId: user?.UserId ?? 0,
-        UserName: values.UserName.trim(),
-        FullName: values.FullName?.trim() ?? '',
-        Password: values.Password || '',
-        CPassword: values.Password || '',
-        UserGroupId: values.UserGroupId ? Number(values.UserGroupId) : 0,
-        UserGroupCode: group?.UserGroupCode ?? '',
-        UserGroupName: group?.UserGroupName ?? '',
-        OrganizationID: org?.OrganizationID ?? 0,
-        OrganizationName: org?.OrganizationName ?? '',
-        Theme: values.Theme || 'Facebook',
-      })
-      message.success(`User ${user ? 'updated' : 'created'}: ${values.UserName}`)
-      onSuccess()
-    } catch (error) {
-      message.error(error instanceof Error ? error.message : 'Failed to save user')
-    } finally {
-      setSaving(false)
-    }
+    await saveUser({
+      UserId: user?.UserId ?? 0,
+      UserName: values.UserName.trim().toLowerCase(),
+      FullName: values.FullName?.trim() ?? '',
+      Password: values.Password || '',
+      CPassword: values.Password || '',
+      OrganizationID: values.OrganizationID ? Number(values.OrganizationID) : 0,
+      Theme: 'Facebook',
+      UserGroupCode: group?.UserGroupCode ?? '',
+      UserGroupId: 0,
+    })
+    message.success(`User ${user ? 'updated' : 'created'}: ${values.UserName}`)
+    onSuccess()
+  } catch (error) {
+    message.error(error instanceof Error ? error.message : 'Failed to save user')
+  } finally {
+    setSaving(false)
   }
+}
 
   return (
     <div className="drawer-form">
