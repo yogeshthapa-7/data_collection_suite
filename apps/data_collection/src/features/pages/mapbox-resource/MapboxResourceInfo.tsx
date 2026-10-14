@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Form, message } from 'antd'
+import { Form, message, Modal } from 'antd'
 import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
-import { fetchMapboxResources } from '@/features/pages/mapbox-resource/services/mapbox-resource.service'
+import { fetchMapboxResources, deleteMapboxResource } from '@/features/pages/mapbox-resource/services/mapbox-resource.service'
 import type { MapboxResourceItem, MapboxResourceFilterValues } from '@/features/pages/mapbox-resource/types/mapbox-resource'
 import { getLayerTypeLabel, getResourceTypeLabel, RESOURCE_TYPE_OPTIONS } from '@/features/pages/mapbox-resource/types/mapbox-resource'
 import { AppInput, AppSelect, AppTable, Button } from '@data-collection-suite/ui'
@@ -64,6 +64,29 @@ const MapboxResourceInfo = () => {
     setDrawerResource(null)
   }
 
+  const handleDelete = (resource: MapboxResourceItem) => {
+     const id = Number(
+    (resource as unknown as Record<string, unknown>).MapboxResourceInfoId ??
+      resource.MapboxResourceInfoID
+  )
+  Modal.confirm({
+    title: 'Delete Mapbox Resource',
+    content: `Are you sure you want to delete ${resource.ResourceName}?`,
+    icon: <DeleteOutlined />,
+    okText: 'Delete',
+    okType: 'danger',
+    onOk: async () => {
+      try {
+        await deleteMapboxResource(id)
+        message.success('Resource deleted successfully')
+        refetch()
+      } catch {
+        message.error('Failed to delete resource')
+      }
+    },
+  })
+}
+
   const columns = [
     {
       title: 'SN',
@@ -115,7 +138,7 @@ const MapboxResourceInfo = () => {
       title: 'Unique Feature Key',
       dataIndex: 'UniqueFeatureKey',
       key: 'UniqueFeatureKey',
-      render: (value: string) => value || '',
+      render: (value: string) => value || ' ',
     },
     {
       title: 'Action',
@@ -138,6 +161,7 @@ const MapboxResourceInfo = () => {
             size="small"
             danger
             icon={<DeleteOutlined />}
+            onClick={() => handleDelete(record)}
           >
             Delete
           </Button>

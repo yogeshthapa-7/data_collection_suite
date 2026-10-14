@@ -45,13 +45,46 @@ export const mapboxResourceServerSearch = async (
 }
 
 export const saveMapboxResource = async (
-  body: Record<string, unknown>
+  payload: MapboxResourceSavePayload
 ): Promise<{ Success: boolean; Message?: string }> => {
   const response = await axios.post<{ Success: boolean; Message?: string }>(
     `${base_url}SaveMapboxResourceInfo`,
-    body
+    payload
   )
   const result = response.data
   if (!result?.Success) throw new Error(result?.Message || 'Failed to save resource')
+  return result
+}
+
+export const buildMapboxResourceSavePayload = (values: {
+  MapboxResourceInfoId?: number
+  ResourceName: string
+  ResourceType: number
+  LayerType: number
+  MapboxId: string
+  MapboxName: string
+  CategoryCode?: string
+  UniqueFeatureKey: string
+}): MapboxResourceSavePayload => ({
+  MapboxResourceInfoId: Number(values.MapboxResourceInfoId ?? 0),
+  ResourceName: values.ResourceName,
+  ResourceType: Number(values.ResourceType) || 0,
+  LayerType: Number(values.LayerType) || 0,
+  MapboxId: values.MapboxId,
+  MapboxName: values.MapboxName,
+  CategoryCode: values.CategoryCode ?? '',
+  UniqueFeatureKey: values.UniqueFeatureKey,
+})
+
+export const deleteMapboxResource = async (
+  mapboxResourceInfoId: number
+): Promise<{ Success: boolean; Message?: string }> => {
+  const response = await axios.get<{ Success: boolean; Message?: string }>(
+    `${base_url}DeleteMapboxResourceInfo?id=${mapboxResourceInfoId}`
+  )
+  const result = response.data
+  if (!result?.Success) {
+    throw new Error(result?.Message || 'Failed to delete resource')
+  }
   return result
 }

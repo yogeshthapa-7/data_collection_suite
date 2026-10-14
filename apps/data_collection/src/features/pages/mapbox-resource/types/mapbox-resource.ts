@@ -90,3 +90,14 @@ export const RESOURCE_TYPE_OPTIONS: { value: number; label: string }[] = [
   { value: 0, label: 'Select ResourceType' },
   ...Object.entries(RESOURCE_TYPE_MAP).map(([value, label]) => ({ value: Number(value), label })),
 ]
+
+export interface MapboxResourceSavePayload {
+  MapboxResourceInfoId: number
+  ResourceName: string
+  ResourceType: number
+  LayerType: number
+  MapboxId: string
+  MapboxName: string
+  CategoryCode: string
+  UniqueFeatureKey: string
+}

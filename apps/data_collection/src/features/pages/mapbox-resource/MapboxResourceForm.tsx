@@ -6,7 +6,7 @@ import {
   RESOURCE_TYPE_MAP,
 } from '@/features/pages/mapbox-resource/types/mapbox-resource'
 import type { MapboxResourceItem, MapboxResourceFormValues } from '@/features/pages/mapbox-resource/types/mapbox-resource'
-import { saveMapboxResource } from '@/features/pages/mapbox-resource/services/mapbox-resource.service'
+import { saveMapboxResource, buildMapboxResourceSavePayload } from '@/features/pages/mapbox-resource/services/mapbox-resource.service'
 
 const resourceTypeOptions = Object.entries(RESOURCE_TYPE_MAP).map(([value, label]) => ({
   value: Number(value),
@@ -50,16 +50,18 @@ const MapboxResourceForm = ({
   const handleFinish = async (values: MapboxResourceFormValues) => {
     setSaving(true)
     try {
-      await saveMapboxResource({
-        MapboxResourceInfoID: resource?.MapboxResourceInfoID ?? 0,
-        MapboxName: values.MapboxName.trim(),
-        MapboxId: values.MapboxId.trim(),
-        ResourceName: values.ResourceName.trim(),
-        CategoryCode: values.CategoryCode?.trim() ?? '',
-        ResourceType: values.ResourceType,
-        LayerType: values.LayerType,
-        UniqueFeatureKey: values.UniqueFeatureKey.trim(),
-      })
+      await saveMapboxResource(
+  buildMapboxResourceSavePayload({
+    MapboxResourceInfoId: resource?.MapboxResourceInfoID ?? 0,
+    ResourceName: values.ResourceName.trim(),
+    ResourceType: values.ResourceType,
+    LayerType: values.LayerType,
+    MapboxId: values.MapboxId.trim(),
+    MapboxName: values.MapboxName.trim(),
+    CategoryCode: values.CategoryCode?.trim() ?? '',
+    UniqueFeatureKey: values.UniqueFeatureKey.trim(),
+  })
+)
       message.success(`Resource ${resource ? 'updated' : 'created'}: ${values.MapboxName}`)
       onSuccess()
     } catch (error) {
