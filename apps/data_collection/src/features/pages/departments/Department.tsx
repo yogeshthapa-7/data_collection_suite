@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
-import { fetchDepartments } from '@/features/pages/departments/services/department.service'
+import { fetchDepartments, deleteDepartment } from '@/features/pages/departments/services/department.service'
 import type { DepartmentItem } from '@/features/pages/departments/types/department'
 import { AppSearchInput, AppTable, Button } from '@data-collection-suite/ui'
 import { usePaginatedList } from '@data-collection-suite/hooks'
@@ -47,6 +47,25 @@ const Department = () => {
     setSearchInput('')
     }
 
+  const handleDelete = (dept: DepartmentItem) => {
+  Modal.confirm({
+    title: 'Delete Department',
+    content: `Are you sure you want to delete ${dept.DepartmentName}?`,
+    icon: <DeleteOutlined />,
+    okText: 'Delete',
+    okType: 'danger',
+    onOk: async () => {
+      try {
+        await deleteDepartment(dept.DepartmentID)
+        message.success('Department deleted successfully')
+        refetch()
+      } catch {
+        message.error('Failed to delete department')
+      }
+    },
+  })
+}
+
   const columns = [
     {
       title: 'SN',
@@ -91,6 +110,7 @@ const Department = () => {
             size="small"
             danger
             icon={<DeleteOutlined />}
+            onClick={() => handleDelete(record)}
           >
             Delete
           </Button>

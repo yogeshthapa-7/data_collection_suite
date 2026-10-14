@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Form, message } from 'antd'
-import { AppInput, Button } from '@data-collection-suite/ui'
-import type { DepartmentItem } from './types/department'
+import { AppInput, Button, AppSelect } from '@data-collection-suite/ui'
+import type { DepartmentItem, DepartmentSelectItem } from './types/department'
+import { getDepartmentSelectList, saveDepartment, buildDepartmentSavePayload } from './services/department.service'
 
 interface DepartmentFormValues {
   DepartmentID?: number
   DepartmentName: string
   DepartmentCode?: string
-  ParentDepartmentName?: string
+  ParentDepartmentID?: string
 }
 
 const DepartmentForm = ({
@@ -21,6 +22,21 @@ const DepartmentForm = ({
 }) => {
   const [form] = Form.useForm()
   const [saving, setSaving] = useState(false)
+  const [departments, setDepartments] = useState<DepartmentSelectItem[]>([])
+  const [loadingOptions, setLoadingOptions] = useState(false)
+
+  useEffect(() => {
+  let isMounted = true
+  const load = async () => {
+    setLoadingOptions(true)
+    const list = await getDepartmentSelectList()
+    if (!isMounted) return
+    setDepartments(list)
+    setLoadingOptions(false)
+  }
+  load()
+  return () => { isMounted = false }
+}, [])
 
   useEffect(() => {
     if(department) {
@@ -28,7 +44,7 @@ const DepartmentForm = ({
         DepartmentID: department.DepartmentID,
         DepartmentName: department.DepartmentName,
         DepartmentCode: department.DepartmentCode,
-        // PerentDepartmentID: Department.ParenetDepartmentID,
+        ParentDepartmentID: department.ParentDepartmentID ? String(department.ParentDepartmentID) : undefined,
         ParentDepartmentName: department.ParentDepartmentName
       })
     }else{
@@ -39,9 +55,19 @@ const DepartmentForm = ({
   const handleFinish = async (values: DepartmentFormValues) => {
     setSaving(true)
     try {
-      // await saveDepartment(values)
-      message.success(`Department created: ${values.DepartmentName}`)
-      onSuccess()
+      const parent = departments.find((d) => String(d.DepartmentID) === String(values.ParentDepartmentID))
+
+await saveDepartment(
+  buildDepartmentSavePayload({
+    DepartmentID: department?.DepartmentID ?? 0,
+    DepartmentName: values.DepartmentName,
+    DepartmentCode: values.DepartmentCode,
+    ParentDepartmentID: values.ParentDepartmentID,
+    ParentDepartmentName: parent?.DepartmentName ?? '',
+  })
+)
+message.success(`Department ${department ? 'updated' : 'created'}: ${values.DepartmentName}`)
+onSuccess()
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Failed to save department'
       message.error(msg)
@@ -67,9 +93,18 @@ const DepartmentForm = ({
           <AppInput label="Department Code" placeholder="Enter department code" />
         </Form.Item>
 
-        <Form.Item name="ParentDepartmentName" >
-          <AppInput label ="Parent Department Name" placeholder ="Enter parent department name" />
-        </Form.Item>
+        <Form.Item name="ParentDepartmentID">
+  <AppSelect
+    label="Parent Department"
+    placeholder="None (root department)"
+    options={[
+      { value: '', label: 'None (root department)' },
+      ...departments.map((d) => ({ value: String(d.DepartmentID), label: d.DepartmentName })),
+    ]}
+    loading={loadingOptions}
+    allowClear
+  />
+</Form.Item>
 
         <div className="mt-6 flex justify-end gap-2 border-t border-slate-200 pt-4">
           <Button variant="ghost" className="!text-slate-600 hover:!text-slate-900" onClick={onCancel}>

@@ -35,3 +35,16 @@ export interface DepartmentServerSearchResponse {
   recordsFiltered: number
   draw: number
 }
+
+export interface DepartmentSelectItem {
+  DepartmentID: number
+  DepartmentName: string
+}
+
+export interface DepartmentSavePayload {
+  DepartmentID: number
+  DepartmentName: string
+  DepartmentCode: string
+  ParentDepartmentID: number
+  ParentDepartmentName: string
+}
