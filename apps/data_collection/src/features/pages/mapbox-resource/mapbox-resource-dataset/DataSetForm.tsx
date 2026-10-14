@@ -28,29 +28,31 @@ const DataSetForm = ({
   }
 }, [dataSet, form])
 
-  const handleFinish = async (values: DataSetFormValues) => {
-    setSaving(true)
+const handleFinish = async (values: DataSetFormValues) => {
+  setSaving(true)
+  try {
+    let featureList: unknown[] = []
     try {
-      const payload: DataSetSavePayload = {
-        DataSetID: dataSet?.DataSetID ?? 0,
-        Name: values.Name,
-        Description: values.Description ?? '',
-        FeatureJson: values.FeatureJson,
-        MapboxResourceInfoId: 0,
-      }
-      await saveDataSet({
-         id: dataSet?.id,
-  name: values.name.trim(),
-  description: values.description?.trim() ?? '',
-      })
-      message.success(`Data set ${dataSet ? 'updated' : 'created'}: ${values.Name}`)
-      onSuccess()
-    } catch (error) {
-      message.error(error instanceof Error ? error.message : 'Failed to save data set')
-    } finally {
-      setSaving(false)
+      const parsed = JSON.parse(values.FeatureJson)
+      featureList = Array.isArray(parsed) ? parsed : [parsed]
+    } catch {
+      message.error('Feature must be valid JSON')
+      return
     }
+    await saveDataSet({
+      id: dataSet?.id,
+      name: values.name.trim(),
+      description: values.description?.trim() ?? '',
+      featureList,
+    })
+    message.success(`Data set ${dataSet ? 'updated' : 'created'}: ${values.name}`)
+    onSuccess()
+  } catch (error) {
+    message.error(error instanceof Error ? error.message : 'Failed to save data set')
+  } finally {
+    setSaving(false)
   }
+}
 
   return (
     <div className="drawer-form">

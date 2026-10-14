@@ -16,11 +16,13 @@ export const createDataSet = async (body: {
   name: string
   description?: string
   mapId?: string
-}): Promise<GeoDataSetVM> => {
+  featureList?: unknown[]
+}) => {
   const response = await axios.post<GeoDataSetVM>(`${maps_base_url}/api/Datasets`, {
     name: body.name,
     description: body.description ?? '',
     mapId: body.mapId ?? '',
+    featureList: body.featureList ?? [],
   })
   return response.data
 }
