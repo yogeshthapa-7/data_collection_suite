@@ -123,3 +123,73 @@ export const uploadEmployeePhoto = async (file: File): Promise<string> => {
   }
   return basePath
 }
+
+export const saveEmployee = async (
+  payload: EmployeeSavePayload
+): Promise<{ Success: boolean; Message?: string }> => {
+  const response = await axios.post<{ Success: boolean; Message?: string }>(
+    `${base_url}SaveEmployeeInfo`,
+    payload
+  )
+  const result = response.data
+  if (!result?.Success) {
+    throw new Error(result?.Message || 'Failed to save employee')
+  }
+  return result
+}
+
+export const buildEmployeeSavePayload = (values: {
+  EmployeeInfoID?: number
+  Fullname: string
+  Address?: string
+  Phone?: string
+  Email?: string
+  Gender?: number
+  DOB?: string
+  EmpStatus?: number
+  OrganizationOfficeID: string | number
+  DepartmentID?: string | number
+  DepartmentName?: string
+  MainBranchID?: string | number
+  MainBranchName?: string
+  BranchID?: string | string
+  BranchName?: string
+  Username?: string
+  Password?: string
+  ConfirmPassword?: string
+  Photo?: string
+}) => ({
+  EmployeeInfoID: Number(values.EmployeeInfoID ?? 0),
+  Fullname: values.Fullname,
+  Address: values.Address || '',
+  Phone: values.Phone || '',
+  Email: values.Email || '',
+  Gender: Number(values.Gender) || 1,
+  DOB: values.DOB ? values.DOB.replace(/\//g, '-') : '',
+  EmpStatus: Number(values.EmpStatus) || 1,
+  OrganizationOfficeID: Number(values.OrganizationOfficeID) || 0,
+  DepartmentID: Number(values.DepartmentID) || 0,
+  DepartmentName: values.DepartmentName || '',
+  MainBranchID: Number(values.MainBranchID) || 0,
+  MainBranchName: values.MainBranchName || '',
+  BranchID: Number(values.BranchID) || 0,
+  BranchName: values.BranchName || '',
+  Photo: values.Photo || '',
+  Username: values.Username || '',
+  Password: values.Password || '',
+  // ConfirmPassword, NOT CPassword — promanage sends this exact key
+  ConfirmPassword: values.ConfirmPassword || '',
+})
+
+export const deleteEmployee = async (
+  employeeInfoId: number
+): Promise<{ Success: boolean; Message?: string }> => {
+  const response = await axios.get<{ Success: boolean; Message?: string }>(
+    `${base_url}DeleteEmployeeInfo?id=${employeeInfoId}`
+  )
+  const result = response.data
+  if (!result?.Success) {
+    throw new Error(result?.Message || 'Failed to delete employee')
+  }
+  return result
+}

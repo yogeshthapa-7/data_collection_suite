@@ -68,3 +68,25 @@ export interface BranchItem {
   MainBranchID: number
   DepartmentID: number
 }
+
+export interface EmployeeSavePayload {
+  EmployeeInfoID: number
+  Fullname: string
+  Address: string
+  Phone: string
+  Email: string
+  Gender: number
+  DOB?: string
+  EmpStatus: number
+  OrganizationOfficeID: number
+  DepartmentID: number
+  DepartmentName: string
+  MainBranchID: number
+  MainBranchName: string
+  BranchID: number
+  BranchName: string
+  Username?: string
+  Password?: string
+  ConfirmPassword?: string
+  Photo?: string
+}

@@ -8,6 +8,8 @@ import {
     getMainBranchSelectList,
     getBranchSelectList,
     uploadEmployeePhoto,
+    saveEmployee,
+    buildEmployeeSavePayload,
  } from '@/features/pages/employee/services/employee.service'
 
 const GENDER_OPTIONS = [
@@ -53,8 +55,8 @@ const EmployeeForm = ({
   const [form] = Form.useForm()
   const [saving, setSaving] = useState(false)
 
-  const [genderOptions] = useState(GENDER_OPTIONS)
-  const [statusOptions] = useState(EMP_STATUS_OPTIONS)
+const [genderOptions] = useState(GENDER_OPTIONS)
+const [statusOptions] = useState(EMP_STATUS_OPTIONS)
 const [orgOffices, setOrgOffices] = useState<OrgOfficeItem[]>([])
 const [departments, setDepartments] = useState<DepartmentItem[]>([])
 const [mainBranches, setMainBranches] = useState<MainBranchItem[]>([])
@@ -115,8 +117,20 @@ useEffect(() => {
     const handleFinish = async (values: EmployeeFormValues) => {
     setSaving(true)
     try {
-      // await saveEmployee(values)
-      message.success(`Employee created: ${values.Fullname}`)
+      const dept = departments.find((d) => String(d.DepartmentInfoID) === String(values.DepartmentID))
+      const mainBranch = mainBranches.find((mb) => String(mb.MainBranchID) === String(values.MainBranchID))
+      const branch = branches.find((b) => String(b.BranchID) === String(values.BranchID))
+
+      await saveEmployee(
+        buildEmployeeSavePayload({
+          ...values,
+          EmployeeInfoID: employee?.EmployeeInfoID ?? 0,
+          DepartmentName: dept?.DepartmentName ?? '',
+          MainBranchName: mainBranch?.MainBranchName ?? '',
+          BranchName: branch?.BranchName ?? '',
+        })
+      )
+      message.success(`Employee ${employee ? 'updated' : 'created'}: ${values.Fullname}`)
       onSuccess()
     } catch (error) {
       message.error(error instanceof Error ? error.message : 'Failed to save employee')
@@ -218,7 +232,7 @@ useEffect(() => {
         <fieldset className="mb-5 rounded-lg border border-slate-200 p-4">
           <legend className="ml-2 px-2 text-sm font-semibold text-slate-700">Organization Details</legend>
           <div className="grid grid-cols-1 gap-x-6 md:grid-cols-2">
-            <Form.Item name="OrganizationOfficeID" rules={[{ required: true, message: 'Required Field' }]}>
+            <Form.Item name="OrganizationOfficeID">
               <AppSelect
                 label="Organization Office"
                 placeholder="Select office"

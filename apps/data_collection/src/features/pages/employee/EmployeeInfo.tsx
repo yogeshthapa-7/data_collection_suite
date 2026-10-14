@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import { message } from 'antd'
+import { message, Modal } from 'antd'
 import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
-import { fetchEmployees } from '@/features/pages/employee/services/employee.service'
+import { fetchEmployees, deleteEmployee } from '@/features/pages/employee/services/employee.service'
 import type { EmployeeItem } from '@/features/pages/employee/types/employee'
 import { AppSearchInput, AppTable, Button } from '@data-collection-suite/ui'
 import { usePaginatedList } from '@data-collection-suite/hooks'
@@ -46,6 +46,25 @@ const EmployeeInfo = () => {
     setSearchInput('')
     setSearchText('')
     }
+
+  const handleDelete = (employee: EmployeeItem) => {
+  Modal.confirm({
+    title: 'Delete Employee',
+    content: `Are you sure you want to delete ${employee.Fullname}?`,
+    icon: <DeleteOutlined />,
+    okText: 'Delete',
+    okType: 'danger',
+    onOk: async () => {
+      try {
+        await deleteEmployee(employee.EmployeeInfoID)
+        message.success('Employee deleted successfully')
+        refetch()
+      } catch {
+        message.error('Failed to delete employee')
+      }
+    },
+  })
+}
 
   const columns = [
     {
@@ -108,6 +127,7 @@ const EmployeeInfo = () => {
             size="small"
             danger
             icon={<DeleteOutlined />}
+            onClick={() => handleDelete(record)}
           >
             Delete
           </Button>
