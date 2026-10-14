@@ -198,7 +198,7 @@ const MapboxResourceInfo = () => {
             <Button type="primary" icon={<PlusOutlined />} onClick={openNewDrawer}>
               Add New Resource
             </Button>
-            <Button type="primary" onClick={() => navigate('/mapbox-resource/upload-data-set')}>
+            <Button type="primary" onClick={() => navigate('/mapbox-resource/upload-dataset')}>
               Upload Data Set
             </Button>
           </div>
