@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { message, Modal } from 'antd'
+import { message, Modal, Tabs } from 'antd'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
 import { fetchDepartments, deleteDepartment } from '@/features/pages/departments/services/department.service'
 import type { DepartmentItem } from '@/features/pages/departments/types/department'
@@ -13,6 +14,13 @@ const Department = () => {
   const [searchInput, setSearchInput] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerDepartment, setDrawerDepartment] = useState<DepartmentItem | null>(null)
+
+  const navigate = useNavigate()
+const tabs = [
+  { key: '/departments', label: 'Departments' },
+  { key: '/main-branch', label: 'Main-Branch' },
+  { key: '/branch', label: 'Branch' },
+]
 
   const {
     data,
@@ -45,6 +53,7 @@ const Department = () => {
   const handleReset = () => {
     setSearchText('')
     setSearchInput('')
+    setCurrentPage(1)
     }
 
   const handleDelete = (dept: DepartmentItem) => {
@@ -121,6 +130,7 @@ const Department = () => {
 
   return (
     <div className="p-6">
+       <Tabs activeKey={location.pathname} onChange={navigate} items={tabs} className="mb-4" />
       <div className="mb-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex flex-wrap items-end gap-4">
           <div className="w-64">

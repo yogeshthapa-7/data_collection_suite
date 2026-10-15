@@ -13,6 +13,8 @@ import EmployeeInfoPage from '@/features/pages/employee/EmployeeInfo'
 import DepartmentPage from '@/features/pages/departments/Department'
 import MapboxResourceInfoPage from '@/features/pages/mapbox-resource/MapboxResourceInfo'
 import UploadDataSetPage from '@/features/pages/mapbox-resource/mapbox-resource-dataset/UploadDataSet'
+import BranchPage from '@/features/pages/branch/Branch'
+import MainBranchPage from '@/features/pages/main-branch/MainBranch'
 import { Provider } from 'react-redux'
 import { store } from '@/app/store'
 
@@ -73,6 +75,8 @@ function RootApp() {
             <Route path="/departments" element={<DepartmentPage />} />
             <Route path="/mapbox-resource" element={<MapboxResourceInfoPage />} />
             <Route path="/mapbox-resource/upload-dataset" element={<UploadDataSetPage />} />
+            <Route path="/branch" element={<BranchPage />} />
+            <Route path="/main-branch" element={<MainBranchPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
