@@ -15,6 +15,7 @@ import MapboxResourceInfoPage from '@/features/setup-pages/mapbox-resource/Mapbo
 import UploadDataSetPage from '@/features/setup-pages/mapbox-resource/mapbox-resource-dataset/UploadDataSet'
 import BranchPage from '@/features/setup-pages/branch/Branch'
 import MainBranchPage from '@/features/setup-pages/main-branch/MainBranch'
+import FormDataTablePage from '@/features/form-data/FormData'
 import { Provider } from 'react-redux'
 import { store } from '@/app/store'
 
@@ -77,6 +78,7 @@ function RootApp() {
             <Route path="/mapbox-resource/upload-dataset" element={<UploadDataSetPage />} />
             <Route path="/branch" element={<BranchPage />} />
             <Route path="/main-branch" element={<MainBranchPage />} />
+            <Route path="/form-data" element={<FormDataTablePage />} />
           </Route>
         </Routes>
       </BrowserRouter>
