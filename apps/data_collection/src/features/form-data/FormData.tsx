@@ -139,6 +139,7 @@ const FormData = () => {
     <div className="p-6">
 
       <div className="mb-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        <Form form={formStructure} layout="vertical" requiredMark={false}>
         <div className="flex flex-wrap items-end gap-4">
           {formId === 0 && (
             <>
@@ -196,6 +197,7 @@ const FormData = () => {
             View Map
           </Button>
         </div>
+        </Form>
       </div>
 
       {getSearchAbleQuestion().length > 0 && (
