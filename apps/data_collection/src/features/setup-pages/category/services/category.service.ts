@@ -112,3 +112,28 @@ export const deleteCategory = async (
   }
   return result
 }
+
+export interface CategorySelectItem {
+  CategoryID: number
+  CategoryName: string
+}
+
+const toRows = (data: unknown): Record<string, unknown>[] => {
+  if (Array.isArray(data)) return data as Record<string, unknown>[]
+  const wrapper = data as { data?: unknown[]; Data?: unknown[] } | null
+  if (Array.isArray(wrapper?.data)) return wrapper.data as Record<string, unknown>[]
+  if (Array.isArray(wrapper?.Data)) return wrapper.Data as Record<string, unknown>[]
+  return []
+}
+
+export const getCategorySelectList = async (): Promise<CategorySelectItem[]> => {
+  try {
+    const response = await axios.get<unknown>(`${base_url}Category/SelectList`)
+    return toRows(response.data).map((item) => ({
+      CategoryID: Number(item.CategoryID ?? item.Value ?? item.id ?? 0),
+      CategoryName: String(item.CategoryName ?? item.Name ?? item.name ?? item.Text ?? ''),
+    }))
+  } catch {
+    return []
+  }
+}

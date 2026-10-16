@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Form, message, Tabs } from 'antd'
+import { Form, message } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
 import {
   ReloadOutlined,
@@ -9,20 +9,16 @@ import {
 import { AppSearchInput, AppTable, Button, AppDrawer, AppSelect } from '@data-collection-suite/ui'
 import { fetchTreeData } from '@/features/form-data/services/FormData.service'
 import type { CustomResponse } from '@/features/form-data/services/FormData.service'
+import { getCategoryGroupSelectList } from '@/features/setup-pages/category-group/services/category-group.service'
+import { getCategorySelectList } from '@/features/setup-pages/category/services/category.service'
+import type { CategoryOption } from '@/features/setup-pages/category-group/services/category-group.service'
+import type { CategorySelectItem } from '@/features/setup-pages/category/services/category.service'
 import type {
-  CategoryOption,
   SearchableQuestion,
   SelectOptionItem,
   TreeDataItem,
 } from '@/features/form-data/types/form-data'
 import { AppMapView, type MapMarker } from '@/shared/components/AppMapView'
-
-const tabs = [
-  { key: '/departments', label: 'Departments' },
-  { key: '/main-branch', label: 'Main-Branch' },
-  { key: '/branch', label: 'Branch' },
-  { key: '/form-data', label: 'Form Data' },
-]
 
 const FormData = () => {
   const navigate = useNavigate()
@@ -43,10 +39,18 @@ const FormData = () => {
   const [mapDrawerOpen, setMapDrawerOpen] = useState(false)
 
   useEffect(() => {
-    formStructure.setFieldsValue({
-      categoryGroup: selCategoryGroup[0]?.id ?? undefined,
-    })
-    // load initial categories
+    const loadSelectLists = async () => {
+      const [groupList, catList] = await Promise.all([
+        getCategoryGroupSelectList(),
+        getCategorySelectList(),
+      ])
+      setSelCategoryGroup(groupList)
+      setCategory(catList)
+      formStructure.setFieldsValue({
+        categoryGroup: groupList[0]?.id ?? undefined,
+      })
+    }
+    loadSelectLists()
   }, [])
 
   const valueSelected = (value: string) => {
@@ -129,7 +133,6 @@ const FormData = () => {
 
   return (
     <div className="p-6">
-      <Tabs activeKey={location.pathname} onChange={navigate} items={tabs} className="mb-4" />
 
       <div className="mb-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex flex-wrap items-end gap-4">
@@ -153,7 +156,7 @@ const FormData = () => {
                 <AppSelect
                   placeholder="Select category"
                   value={formStructure.getFieldValue('category') ?? undefined}
-                  options={category.map((o) => ({ value: o.id, label: o.text }))}
+                  options={category.map((o) => ({ value: String(o.CategoryID), label: o.CategoryName }))}
                   onChange={(val) => formStructure.setFieldsValue({ category: val })}
                   showSearch
                   allowClear

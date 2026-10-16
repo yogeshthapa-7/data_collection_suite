@@ -1,7 +1,32 @@
 import axios from 'axios'
 import type { categoryGroupSavePayload, CategoryGroupServerSearchRequest, CategoryGroupServerSearchResponse, CategoryGroupSavePayload } from '@/features/setup-pages/category-group/types/category-type'
 
+export interface CategoryOption {
+  id: string
+  text: string
+}
+
 const base_url = import.meta.env.VITE_BASE_URL
+
+const toRows = (data: unknown): Record<string, unknown>[] => {
+  if (Array.isArray(data)) return data as Record<string, unknown>[]
+  const wrapper = data as { data?: unknown[]; Data?: unknown[] } | null
+  if (Array.isArray(wrapper?.data)) return wrapper.data as Record<string, unknown>[]
+  if (Array.isArray(wrapper?.Data)) return wrapper.Data as Record<string, unknown>[]
+  return []
+}
+
+export const getCategoryGroupSelectList = async (): Promise<CategoryOption[]> => {
+  try {
+    const response = await axios.get<unknown>(`${base_url}CategoryGroup/SelectList`)
+    return toRows(response.data).map((item) => ({
+      id: String(item.CategoryGroupID ?? item.Value ?? item.id ?? ''),
+      text: String(item.GroupName ?? item.Name ?? item.name ?? item.Text ?? ''),
+    }))
+  } catch {
+    return []
+  }
+}
 
 export const categoryGroupServerSearch = async (
     data: CategoryGroupServerSearchRequest
