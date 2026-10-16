@@ -1,3 +1,15 @@
+import type { DepartmentSelectItem } from "@/features/pages/departments/types/department"
+
+export interface MainBranchSelectItem {
+  MainBranchID: number
+  MainBranchName: string
+}
+
+export interface DepartmentSelectItem {
+  DepartmentID: number
+  DepartmentName: string
+}
+
 export interface BranchServerSearchModel {
   draw: number
   start: number
@@ -15,7 +27,7 @@ export interface BranchServerSearchRequest {
 }
 
 export interface BranchItem {
- SN?: number
+   SN?: number
   BranchID: number
   BranchName: string
   BranchCode?: string
@@ -30,4 +42,14 @@ export interface BranchServerSearchResponse {
   recordsTotal: number
   recordsFiltered: number
   draw: number
+}
+
+export interface BranchSavePayload {
+   BranchID: number
+  BranchName: string
+  BranchCode: string
+  MainBranchID: number
+  MainBranchName: string
+  DepartmentID: number
+  DepartmentName: string
 }

@@ -2,15 +2,18 @@ import { useEffect, useState } from 'react'
 import { message, Modal, Tabs } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { ReloadOutlined, SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
-import { AppSearchInput, AppTable, Button } from '@data-collection-suite/ui'
+import { AppSearchInput, AppTable, Button, AppDrawer } from '@data-collection-suite/ui'
 import { usePaginatedList } from '@data-collection-suite/hooks'
-import { fetchMainBranches } from '@/features/pages/main-branch/services/main-branch.service'
+import { fetchMainBranches, deleteMainBranch } from '@/features/pages/main-branch/services/main-branch.service'
 import type { MainBranchItem } from '@/features/pages/main-branch/types/main-branch'
+import MainBranchForm from './MainBranchForm'
 
 const MainBranch = () => {
   const [searchInput, setSearchInput] = useState('')
   const navigate = useNavigate()
   const location = useLocation()
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerMainBranch, setDrawerMainBranch] = useState<MainBranchItem | null>(null)
 
   const tabs = [
     { key: '/departments', label: 'Departments' },
@@ -29,7 +32,7 @@ const MainBranch = () => {
 
   useEffect(() => { if (error) message.error(error) }, [error])
 
-  const handleDelete = (item: MainBranchItem) => {
+    const handleDelete = (item: MainBranchItem) => {
     Modal.confirm({
       title: 'Delete Main Branch',
       content: `Are you sure you want to delete ${item.MainBranchName}?`,
@@ -38,11 +41,14 @@ const MainBranch = () => {
       okType: 'danger',
       onOk: async () => {
         try {
-          // await deleteMainBranch(item.MainBranchID)
+          const res = await deleteMainBranch(item.MainBranchID)
+          console.log('Delete result:', res) // check backend response
           message.success('Main Branch deleted successfully')
           refetch()
-        } catch {
-          message.error('Failed to delete main branch')
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : 'Failed to delete main branch'
+          console.error('Delete error:', err) // see full error
+          message.error(msg)
         }
       },
     })
@@ -63,6 +69,10 @@ const MainBranch = () => {
             size="small"
             style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}
             icon={<EditOutlined />}
+              onClick={() => {
+    setDrawerMainBranch(r)
+    setDrawerOpen(true)
+  }}
           >
             Edit
           </Button>
@@ -94,7 +104,7 @@ const MainBranch = () => {
           <Button icon={<ReloadOutlined />} onClick={() => { setSearchInput(''); setCurrentPage(1); }}>
             Clear
           </Button>
-          <Button type="primary" icon={<PlusOutlined />} className="ml-auto">
+          <Button type="primary" icon={<PlusOutlined />} className="ml-auto" onClick={() => setDrawerOpen(true)}>
             Add New Main Branch
           </Button>
         </div>
@@ -111,6 +121,23 @@ const MainBranch = () => {
         onPageSizeChange={setPageSize}
         scroll={{ x: 800 }}
       />
+        <AppDrawer
+        open={drawerOpen}
+        onClose={() => { setDrawerOpen(false); setDrawerMainBranch(null) }}
+        title={drawerMainBranch ? 'Edit Main Branch' : 'Add Main Branch'}
+        subtitle={drawerMainBranch ? 'Update main branch details' : 'Create a new main branch'}
+        width={520}
+      >
+         <MainBranchForm
+          mainBranch={drawerMainBranch}
+          onCancel={() => setDrawerOpen(false)}
+          onSuccess={() => {
+            setDrawerMainBranch(null)
+            setDrawerOpen(false)
+            refetch()
+          }}
+        />
+      </AppDrawer>
     </div>
   )
 }

@@ -29,3 +29,16 @@ export interface MainBranchServerSearchResponse {
   recordsFiltered: number
   draw: number
 }
+
+export interface MainBranchSavePayload {
+  MainBranchID: number
+  MainBranchName: string
+  MainBranchCode: string
+  DepartmentID: number
+  DepartmentName: string
+}
+
+export interface DepartmentSelectItem {
+  DepartmentID: number
+  DepartmentName: string
+}

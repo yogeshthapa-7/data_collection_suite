@@ -2,15 +2,18 @@ import { useEffect, useState } from 'react'
 import { message, Modal, Tabs } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { ReloadOutlined, SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
-import { AppSearchInput, AppTable, Button } from '@data-collection-suite/ui'
+import { AppSearchInput, AppTable, Button, AppDrawer } from '@data-collection-suite/ui'
 import { usePaginatedList } from '@data-collection-suite/hooks'
-import { fetchBranches } from '@/features/pages/branch/services/branch.service'
+import { fetchBranches, deleteBranch } from '@/features/pages/branch/services/branch.service'
 import type { BranchItem } from '@/features/pages/branch/types/branch'
+import BranchForm from './BranchForm'
 
 const Branch = () => {
   const [searchInput, setSearchInput] = useState('')
   const navigate = useNavigate()
   const location = useLocation()
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerBranch, setDrawerBranch] = useState<BranchItem | null>(null)
 
   const tabs = [
     { key: '/departments', label: 'Departments' },
@@ -38,7 +41,7 @@ const Branch = () => {
       okType: 'danger',
       onOk: async () => {
         try {
-          // await deleteBranch(item.BranchID)
+          await deleteBranch(item.BranchID)
           message.success('Branch deleted successfully')
           refetch()
         } catch {
@@ -64,6 +67,10 @@ const Branch = () => {
             size="small"
             style={{ backgroundColor: '#389e0d', borderColor: '#389e0d', color: 'white' }}
             icon={<EditOutlined />}
+            onClick={() => {
+    setDrawerBranch(r)
+    setDrawerOpen(true)
+  }}
           >
             Edit
           </Button>
@@ -95,7 +102,8 @@ const Branch = () => {
           <Button icon={<ReloadOutlined />} onClick={() => { setSearchInput(''); setCurrentPage(1); }}>
             Clear
           </Button>
-          <Button type="primary" icon={<PlusOutlined />} className="ml-auto">
+          <Button type="primary" icon={<PlusOutlined />} className="ml-auto"
+          onClick={() => setDrawerOpen(true)}>
             Add New Branch
           </Button>
         </div>
@@ -112,6 +120,23 @@ const Branch = () => {
         onPageSizeChange={setPageSize}
         scroll={{ x: 800 }}
       />
+      <AppDrawer
+        open={drawerOpen}
+        onClose={() => { setDrawerOpen(false); setDrawerBranch(null) }}
+        title={drawerBranch ? 'Edit Branch' : 'Add Branch'}
+        subtitle={drawerBranch ? 'Update branch details' : 'Create a new branch'}
+        width={520}
+      >
+         <BranchForm
+          branch={drawerBranch}
+          onCancel={() => setDrawerOpen(false)}
+          onSuccess={() => {
+            setDrawerBranch(null)
+            setDrawerOpen(false)
+            refetch()
+          }}
+        />
+      </AppDrawer>
     </div>
   )
 }
