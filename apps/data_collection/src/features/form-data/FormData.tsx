@@ -147,12 +147,8 @@ const FormData = () => {
                 <label className="mb-1 block text-sm font-bold text-slate-700">Category Group</label>
                 <AppSelect
                   placeholder="Select category group"
-                  value={formStructure.getFieldValue('categoryGroup') ?? undefined}
                   options={selCategoryGroup.map((o) => ({ value: o.id, label: o.text }))}
-                  onChange={(val) => {
-                    valueSelected(val as string)
-                    formStructure.setFieldsValue({ categoryGroup: val as string })
-                  }}
+                  onChange={(val) => valueSelected(val as string)}
                   showSearch
                   allowClear
                 />
