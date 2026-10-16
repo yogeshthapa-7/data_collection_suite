@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import {
   ReloadOutlined,
   SearchOutlined,
-  MapOutlined,
+  EnvironmentOutlined,
 } from '@ant-design/icons'
 import { AppSearchInput, AppTable, Button, AppDrawer, AppSelect } from '@data-collection-suite/ui'
 import { fetchTreeData } from '@/features/form-data/services/FormData.service'
@@ -174,7 +174,7 @@ const FormData = () => {
           </Button>
           <Button
             type="primary"
-            icon={<MapOutlined />}
+            icon={<EnvironmentOutlined />}
             className="ml-auto"
             style={{ backgroundColor: '#1890ff', borderColor: '#1890ff', color: 'white' }}
             onClick={() => setMapDrawerOpen(true)}
