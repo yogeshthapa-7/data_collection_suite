@@ -46,25 +46,9 @@ const FormData = () => {
       ])
       setSelCategoryGroup(groupList)
       setCategory(catList)
-      formStructure.setFieldsValue({
-        categoryGroup: groupList[0]?.id ?? undefined,
-      })
     }
     loadSelectLists()
   }, [])
-
-  const valueSelected = (value: string) => {
-    formStructure.setFieldsValue({
-      categoryGroup: value,
-      category: undefined,
-    })
-    if (value) {
-      const selected = selCategoryGroup.find((g) => g.id === value)
-      if (selected) {
-        // Optionally filter categories by group if backend supports it
-      }
-    }
-  }
 
   const getSearchAbleQuestion = (): SearchableQuestion[] => searchableQuestions
 
@@ -147,8 +131,9 @@ const FormData = () => {
                 <label className="mb-1 block text-sm font-bold text-slate-700">Category Group</label>
                 <AppSelect
                   placeholder="Select category group"
+                  value={formStructure.getFieldValue('categoryGroup') ?? undefined}
                   options={selCategoryGroup.map((o) => ({ value: o.id, label: o.text }))}
-                  onChange={(val) => valueSelected(val as string)}
+                  onChange={(val) => formStructure.setFieldsValue({ categoryGroup: val })}
                   showSearch
                   allowClear
                 />
