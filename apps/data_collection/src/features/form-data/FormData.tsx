@@ -133,39 +133,44 @@ const FormData = () => {
 
       <div className="mb-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex flex-wrap items-end gap-4">
-              {formId === 0 && (
-                <>
-                  <div className="w-64">
-                    <label className="mb-1 block text-sm font-bold text-slate-700">Category Group</label>
-                    <AppSearchInput
-                      placeholder="Select category group"
-                      value={formStructure.getFieldValue('categoryGroup') ?? ''}
-                      onChange={(val) => valueSelected(val as string)}
-                      onPressEnter={handleSearch}
-                    />
-                  </div>
+          {formId === 0 && (
+            <>
+              <div className="w-64">
+                <label className="mb-1 block text-sm font-bold text-slate-700">Category Group</label>
+                <AppSelect
+                  placeholder="Select category group"
+                  value={formStructure.getFieldValue('categoryGroup') ?? undefined}
+                  options={selCategoryGroup.map((o) => ({ value: o.id, label: o.text }))}
+                  onChange={(val) => valueSelected(val as string)}
+                  onSearch={handleSearch}
+                  showSearch
+                  allowClear
+                />
+              </div>
 
-                  <div className="w-64">
-                    <label className="mb-1 block text-sm font-bold text-slate-700">Category</label>
-                    <AppSearchInput
-                      placeholder="Select category"
-                      value={formStructure.getFieldValue('category') ?? ''}
-                      onChange={(val) => formStructure.setFieldsValue({ category: val })}
-                      onPressEnter={handleSearch}
-                    />
-                  </div>
+              <div className="w-64">
+                <label className="mb-1 block text-sm font-bold text-slate-700">Category</label>
+                <AppSelect
+                  placeholder="Select category"
+                  value={formStructure.getFieldValue('category') ?? undefined}
+                  options={category.map((o) => ({ value: o.id, label: o.text }))}
+                  onChange={(val) => formStructure.setFieldsValue({ category: val })}
+                  showSearch
+                  allowClear
+                />
+              </div>
 
-                  <div className="w-64">
-                    <label className="mb-1 block text-sm font-bold text-slate-700">Parent GUID</label>
-                    <AppSearchInput
-                      placeholder="Enter Parent GUID"
-                      value={formStructure.getFieldValue('parentGUID') ?? ''}
-                      onChange={(val) => formStructure.setFieldsValue({ parentGUID: val })}
-                      onPressEnter={handleSearch}
-                    />
-                  </div>
-                </>
-              )}
+              <div className="w-64">
+                <label className="mb-1 block text-sm font-bold text-slate-700">Parent GUID</label>
+                <AppSearchInput
+                  placeholder="Enter Parent GUID"
+                  value={formStructure.getFieldValue('parentGUID') ?? ''}
+                  onChange={(val) => formStructure.setFieldsValue({ parentGUID: val })}
+                  onPressEnter={handleSearch}
+                />
+              </div>
+            </>
+          )}
           <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
             Search
           </Button>
