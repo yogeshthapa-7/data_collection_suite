@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Form, message } from 'antd'
 import { AppInput, AppSelect, Button } from '@data-collection-suite/ui'
-import type { CategoryGroupItem } from '@/features/pages/category-group/types/category-type'
-import { saveCategoryGroup, buildCategoryGroupSavePayload } from '@/features/pages/category-group/services/category-group.service'
+import type { CategoryGroupItem } from '@/features/setup-pages/category-group/types/category-type'
+import { saveCategoryGroup, buildCategoryGroupSavePayload } from '@/features/setup-pages/category-group/services/category-group.service'
 
 // Stored values are the FontAwesome class strings — must match the iconMap keys
 // used to render the cards (category_group.tsx:14)

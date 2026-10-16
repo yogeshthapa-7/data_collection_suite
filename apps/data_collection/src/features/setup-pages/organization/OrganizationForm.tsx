@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Form, message } from 'antd'
 import { AppInput, AppSelect, Button } from '@data-collection-suite/ui'
-import type { OrganizationItem, OrganizationSelectItem } from '@/features/pages/organization/types/organization'
-import { buildOrganizationSavePayload, getOrganizationSelectList, saveOrganization } from '@/features/pages/organization/services/organization.service'
+import type { OrganizationItem, OrganizationSelectItem } from '@/features/setup-pages/organization/types/organization'
+import { buildOrganizationSavePayload, getOrganizationSelectList, saveOrganization } from '@/features/setup-pages/organization/services/organization.service'
 
 interface OrganizationFormValues {
   Title: string

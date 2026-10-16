@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { Row, Col, Spin, message, Typography, Modal } from 'antd'
 import { SearchOutlined, HomeOutlined, CarryOutOutlined, HeartOutlined, ToolOutlined, BookOutlined, PhoneOutlined, ApartmentOutlined, ShoppingOutlined, ReloadOutlined, PlusOutlined, DeleteOutlined } from '@ant-design/icons'
-import { deleteCategoryGroup, fetchCategoryGroups } from '@/features/pages/category-group/services/category-group.service'
+import { deleteCategoryGroup, fetchCategoryGroups } from '@/features/setup-pages/category-group/services/category-group.service'
 import type {
   CategoryGroupItem,
-} from '@/features/pages/category-group/types/category-type'
+} from '@/features/setup-pages/category-group/types/category-type'
 import { AppCard, AppSearchInput, Button, AppPagination } from '@data-collection-suite/ui'
 import { AppDrawer } from '@data-collection-suite/ui'
 import { usePaginatedList } from '@data-collection-suite/hooks'

@@ -4,7 +4,7 @@ import type {
   UserServerSearchResponse,
   UserGroupItem,
   OrganizationItem,
-} from '@/features/pages/users/types/users'
+} from '@/features/setup-pages/users/types/users'
 
 const base_url = import.meta.env.VITE_BASE_URL || ''
 

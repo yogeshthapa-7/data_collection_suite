@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { categoryGroupSavePayload, CategoryGroupServerSearchRequest, CategoryGroupServerSearchResponse, CategoryGroupSavePayload } from '@/features/pages/category-group/types/category-type'
+import type { categoryGroupSavePayload, CategoryGroupServerSearchRequest, CategoryGroupServerSearchResponse, CategoryGroupSavePayload } from '@/features/setup-pages/category-group/types/category-type'
 
 const base_url = import.meta.env.VITE_BASE_URL
 

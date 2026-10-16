@@ -4,9 +4,9 @@ import { AppInput, AppSelect, Button } from '@data-collection-suite/ui'
 import {
   LAYER_TYPE_MAP,
   RESOURCE_TYPE_MAP,
-} from '@/features/pages/mapbox-resource/types/mapbox-resource'
-import type { MapboxResourceItem, MapboxResourceFormValues } from '@/features/pages/mapbox-resource/types/mapbox-resource'
-import { saveMapboxResource, buildMapboxResourceSavePayload } from '@/features/pages/mapbox-resource/services/mapbox-resource.service'
+} from '@/features/setup-pages/mapbox-resource/types/mapbox-resource'
+import type { MapboxResourceItem, MapboxResourceFormValues } from '@/features/setup-pages/mapbox-resource/types/mapbox-resource'
+import { saveMapboxResource, buildMapboxResourceSavePayload } from '@/features/setup-pages/mapbox-resource/services/mapbox-resource.service'
 
 const resourceTypeOptions = Object.entries(RESOURCE_TYPE_MAP).map(([value, label]) => ({
   value: Number(value),

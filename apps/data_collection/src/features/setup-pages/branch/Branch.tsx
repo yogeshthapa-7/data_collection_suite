@@ -4,8 +4,8 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { ReloadOutlined, SearchOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import { AppSearchInput, AppTable, Button, AppDrawer } from '@data-collection-suite/ui'
 import { usePaginatedList } from '@data-collection-suite/hooks'
-import { fetchBranches, deleteBranch } from '@/features/pages/branch/services/branch.service'
-import type { BranchItem } from '@/features/pages/branch/types/branch'
+import { fetchBranches, deleteBranch } from '@/features/setup-pages/branch/services/branch.service'
+import type { BranchItem } from '@/features/setup-pages/branch/types/branch'
 import BranchForm from './BranchForm'
 
 const Branch = () => {

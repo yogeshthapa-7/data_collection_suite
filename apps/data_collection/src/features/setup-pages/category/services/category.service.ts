@@ -4,7 +4,7 @@ import type {
   CategoryServerSearchResponse,
   CategoryGroupSelectItem,
   CategorySavePayload,
-} from '@/features/pages/category/types/category'
+} from '@/features/setup-pages/category/types/category'
 
 const base_url = import.meta.env.VITE_BASE_URL || ''
 

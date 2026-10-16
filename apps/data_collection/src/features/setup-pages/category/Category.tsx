@@ -14,8 +14,8 @@ import {
   ReloadOutlined,
   PlusOutlined,
 } from '@ant-design/icons'
-import { fetchCategories, getCategoryGroupSelectList, deleteCategory } from '@/features/pages/category/services/category.service'
-import type { CategoryItem, CategoryGroupSelectItem } from '@/features/pages/category/types/category'
+import { fetchCategories, getCategoryGroupSelectList, deleteCategory } from '@/features/setup-pages/category/services/category.service'
+import type { CategoryItem, CategoryGroupSelectItem } from '@/features/setup-pages/category/types/category'
 import { AppSelect, AppSearchInput, AppCard, AppDrawer, AppDropdownMenu, AppPagination, Button } from '@data-collection-suite/ui'
 import { convertAdToBs } from '@data-collection-suite/utils'
 import { usePaginatedList } from '@data-collection-suite/hooks'

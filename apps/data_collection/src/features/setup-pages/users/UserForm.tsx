@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Form, message } from 'antd'
 import { AppInput, AppSelect, Button } from '@data-collection-suite/ui'
-import type { UserItem, UserGroupItem, OrganizationItem, UserFormValues } from '@/features/pages/users/types/users'
-import { getUserGroupSelectList, getOrganizationSelectList, saveUser } from '@/features/pages/users/services/users.service'
+import type { UserItem, UserGroupItem, OrganizationItem, UserFormValues } from '@/features/setup-pages/users/types/users'
+import { getUserGroupSelectList, getOrganizationSelectList, saveUser } from '@/features/setup-pages/users/services/users.service'
 
 const UserForm = ({
   user = null,

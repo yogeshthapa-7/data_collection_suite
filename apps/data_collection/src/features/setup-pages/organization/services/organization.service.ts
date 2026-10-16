@@ -3,7 +3,7 @@ import type {
   OrganizationServerSearchRequest,
   OrganizationServerSearchResponse,
   OrganizationSelectItem,
-} from '@/features/pages/organization/types/organization'
+} from '@/features/setup-pages/organization/types/organization'
 
 const base_url = import.meta.env.VITE_BASE_URL || ''
 

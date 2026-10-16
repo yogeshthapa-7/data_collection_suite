@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { GeoDataSetVM } from '@/features/pages/mapbox-resource/mapbox-resource-dataset/types/dataset'
+import type { GeoDataSetVM } from '@/features/setup-pages/mapbox-resource/mapbox-resource-dataset/types/dataset'
 
 const maps_base_url = import.meta.env.VITE_MAPS_BASE_URL // https://maps.himalayankasturi.com.np/geojson
 

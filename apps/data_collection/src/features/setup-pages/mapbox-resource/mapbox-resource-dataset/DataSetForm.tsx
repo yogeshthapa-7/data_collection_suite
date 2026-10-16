@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Form, message } from 'antd'
 import { AppInput, AppTextarea, Button } from '@data-collection-suite/ui'
-import { saveDataSet } from '@/features/pages/mapbox-resource/mapbox-resource-dataset/services/dataset.service'
-import type { DataSetItem, DataSetFormValues, DataSetSavePayload } from '@/features/pages/mapbox-resource/mapbox-resource-dataset/types/dataset'
+import { saveDataSet } from '@/features/setup-pages/mapbox-resource/mapbox-resource-dataset/services/dataset.service'
+import type { DataSetItem, DataSetFormValues, DataSetSavePayload } from '@/features/setup-pages/mapbox-resource/mapbox-resource-dataset/types/dataset'
 
 const DataSetForm = ({
   dataSet = null,

@@ -2,7 +2,7 @@ import axios from 'axios'
 import type {
   DepartmentServerSearchRequest,
   DepartmentServerSearchResponse,
-} from '@/features/pages/departments/types/department'
+} from '@/features/setup-pages/departments/types/department'
 
 const base_url = import.meta.env.VITE_BASE_URL || ''
 

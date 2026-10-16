@@ -3,7 +3,7 @@ import type {
   BranchServerSearchRequest,
   BranchServerSearchResponse,
   BranchSavePayload,
-} from '@/features/pages/branch/types/branch'
+} from '@/features/setup-pages/branch/types/branch'
 import type { DepartmentSelectItem } from '@/features/setup-pages/departments/types/department'
 
 const base_url = import.meta.env.VITE_BASE_URL || ''

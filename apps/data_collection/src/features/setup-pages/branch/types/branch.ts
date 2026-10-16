@@ -1,4 +1,4 @@
-import type { DepartmentSelectItem } from "@/features/pages/departments/types/department"
+import type { DepartmentSelectItem } from "@/features/setup-pages/departments/types/department"
 
 export interface MainBranchSelectItem {
   MainBranchID: number

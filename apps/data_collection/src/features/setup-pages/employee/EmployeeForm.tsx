@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Form, message } from 'antd'
 import { AppInput, AppSelect, Button, AppNepaliDatePicker, AppDocumentUpload } from '@data-collection-suite/ui'
-import type { EmployeeItem, OrgOfficeItem, DepartmentItem, MainBranchItem, BranchItem } from '@/features/pages/employee/types/employee'
+import type { EmployeeItem, OrgOfficeItem, DepartmentItem, MainBranchItem, BranchItem } from '@/features/setup-pages/employee/types/employee'
 import {
     getOrganizationOfficeSelectList,
     getDepartmentSelectList,
@@ -10,7 +10,7 @@ import {
     uploadEmployeePhoto,
     saveEmployee,
     buildEmployeeSavePayload,
- } from '@/features/pages/employee/services/employee.service'
+ } from '@/features/setup-pages/employee/services/employee.service'
 
 const GENDER_OPTIONS = [
     {value: 1, label: "Male"},

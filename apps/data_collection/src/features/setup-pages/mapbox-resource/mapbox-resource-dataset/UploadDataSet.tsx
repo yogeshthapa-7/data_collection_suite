@@ -7,10 +7,10 @@ import { usePaginatedList } from '@data-collection-suite/hooks'
 import {
   fetchDataSets,
   deleteDataSet,
-} from '@/features/pages/mapbox-resource/mapbox-resource-dataset/services/dataset.service'
+} from '@/features/setup-pages/mapbox-resource/mapbox-resource-dataset/services/dataset.service'
 import type {
   DataSetItem,
-} from '@/features/pages/mapbox-resource/mapbox-resource-dataset/types/dataset'
+} from '@/features/setup-pages/mapbox-resource/mapbox-resource-dataset/types/dataset'
 import DataSetForm from './DataSetForm'
 
 const UploadDataSet = () => {

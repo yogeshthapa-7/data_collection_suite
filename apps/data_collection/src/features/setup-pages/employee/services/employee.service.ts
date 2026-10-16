@@ -6,7 +6,7 @@ import type {
   DepartmentItem,
   MainBranchItem,
   BranchItem
-} from '@/features/pages/employee/types/employee'
+} from '@/features/setup-pages/employee/types/employee'
 
 const base_url = import.meta.env.VITE_BASE_URL || ''
 

@@ -8,8 +8,8 @@ import {
   AppRichTextEditor,
   Button,
 } from '@data-collection-suite/ui'
-import { getCategoryGroupSelectList, saveCategory, buildCategorySavePayload } from '@/features/pages/category/services/category.service'
-import type { CategoryGroupSelectItem, CategoryItem } from '@/features/pages/category/types/category'
+import { getCategoryGroupSelectList, saveCategory, buildCategorySavePayload } from '@/features/setup-pages/category/services/category.service'
+import type { CategoryGroupSelectItem, CategoryItem } from '@/features/setup-pages/category/types/category'
 
 // Mirrors the legacy app's `fontIcons` list — stored value is the FontAwesome class string
 const FONT_ICONS = [
