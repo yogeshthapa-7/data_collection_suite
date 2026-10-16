@@ -54,11 +54,15 @@ const FormData = () => {
   }, [])
 
   const valueSelected = (value: string) => {
-    const catId = Number(value)
-    formStructure.setFieldsValue({ category: undefined })
-    setCategory([])
-    if (catId) {
-      // fetch categories by category group id
+    formStructure.setFieldsValue({
+      categoryGroup: value,
+      category: undefined,
+    })
+    if (value) {
+      const selected = selCategoryGroup.find((g) => g.id === value)
+      if (selected) {
+        // Optionally filter categories by group if backend supports it
+      }
     }
   }
 
@@ -144,8 +148,10 @@ const FormData = () => {
                   placeholder="Select category group"
                   value={formStructure.getFieldValue('categoryGroup') ?? undefined}
                   options={selCategoryGroup.map((o) => ({ value: o.id, label: o.text }))}
-                  onChange={(val) => valueSelected(val as string)}
-                  onSearch={handleSearch}
+                  onChange={(val) => {
+                    valueSelected(val as string)
+                    formStructure.setFieldsValue({ categoryGroup: val as string })
+                  }}
                   showSearch
                   allowClear
                 />
