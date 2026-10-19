@@ -11,18 +11,21 @@
   },
   "dependencies": {
     "@ant-design/icons": "^6.3.4",
+    "@data-collection-suite/hooks": "file:../../packages/hooks",
+    "@data-collection-suite/ui": "file:../../packages/ui",
+    "@data-collection-suite/utils": "file:../../packages/utils",
     "@reduxjs/toolkit": "^2.13.0",
+    "@types/leaflet": "^1.9.22",
     "antd": "^6.6.5",
     "axios": "^1.20.0",
+    "leaflet": "^1.9.4",
     "lucide-react": "^1.47.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "react-hook-form": "^7.88.0",
+    "react-leaflet": "^5.0.0",
     "react-redux": "^9.3.0",
-    "react-router-dom": "^7.18.4",
-    "@data-collection-suite/ui": "file:../../packages/ui",
-    "@data-collection-suite/hooks": "file:../../packages/hooks",
-    "@data-collection-suite/utils": "file:../../packages/utils"
+    "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

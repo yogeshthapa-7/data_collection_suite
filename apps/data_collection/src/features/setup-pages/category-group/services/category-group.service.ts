@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { categoryGroupSavePayload, CategoryGroupServerSearchRequest, CategoryGroupServerSearchResponse, CategoryGroupSavePayload } from '@/features/setup-pages/category-group/types/category-type'
+import type { categoryGroupSavePayload, CategoryGroupServerSearchRequest, CategoryGroupServerSearchResponse } from '@/features/setup-pages/category-group/types/category-type'
 
 export interface CategoryOption {
   id: string
@@ -62,7 +62,7 @@ export const fetchCategoryGroups = async (
 
 export const deleteCategoryGroup = async (
     categoryGroupId: number
-): Promise<{ Success: boolean; Message }> => {
+): Promise<{ Success: boolean; Message?: string }> => {
     const response = await axios.get<{ Success: boolean; Message?: string }>(
         `${base_url}DeleteCategoryGroup?CategoryGroupID=${categoryGroupId}`
     )
@@ -92,7 +92,7 @@ export const buildCategoryGroupSavePayload = (values: {
     GroupName: string
     GroupCode?: string
     Icon?: string
-}): CategoryGroupSavePayload => ({
+}): categoryGroupSavePayload => ({
     CategoryGroupID: values.CategoryGroupID ?? 0,
     GroupName: values.GroupName,
     GroupCode: values.GroupCode ?? '',

@@ -2,6 +2,8 @@ import axios from 'axios'
 import type {
   DepartmentServerSearchRequest,
   DepartmentServerSearchResponse,
+  DepartmentSavePayload,
+  DepartmentSelectItem,
 } from '@/features/setup-pages/departments/types/department'
 
 const base_url = import.meta.env.VITE_BASE_URL || ''

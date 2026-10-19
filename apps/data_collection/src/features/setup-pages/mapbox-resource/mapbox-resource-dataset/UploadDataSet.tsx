@@ -9,7 +9,7 @@ import {
   deleteDataSet,
 } from '@/features/setup-pages/mapbox-resource/mapbox-resource-dataset/services/dataset.service'
 import type {
-  DataSetItem,
+  GeoDataSetVM,
 } from '@/features/setup-pages/mapbox-resource/mapbox-resource-dataset/types/dataset'
 import DataSetForm from './DataSetForm'
 
@@ -17,7 +17,7 @@ const UploadDataSet = () => {
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [drawerDataSet, setDrawerDataSet] = useState<DataSetItem | null>(null)
+  const [drawerDataSet, setDrawerDataSet] = useState<GeoDataSetVM | null>(null)
 
   const {
     data,
@@ -29,7 +29,7 @@ const UploadDataSet = () => {
     setCurrentPage,
     setPageSize,
     refetch,
-  } = usePaginatedList<DataSetItem>({
+  } = usePaginatedList<GeoDataSetVM>({
     fetcher: async ({ start, length }) => {
       const rows = await fetchDataSets(name)
       return {
@@ -46,16 +46,16 @@ const UploadDataSet = () => {
     if (error) message.error(error)
   }, [error])
 
-  const handleDelete = (item: DataSetItem) => {
+  const handleDelete = (item: GeoDataSetVM) => {
   Modal.confirm({
-    title: 'Delete Data Set',
-    content: `Are you sure you want to delete ${item.name}?`,
-    icon: <DeleteOutlined />,
+      title: 'Delete Data Set',
+      content: `Are you sure you want to delete ${item.name}?`,
+      icon: <DeleteOutlined />,
     okText: 'Delete',
     okType: 'danger',
     onOk: async () => {
       try {
-        await deleteDataSet(item.id)
+        await deleteDataSet(item.id ?? '')
         message.success('Data set deleted successfully')
         refetch()
       } catch {
@@ -74,7 +74,7 @@ const UploadDataSet = () => {
       title: 'Action',
       key: 'action',
       width: 160,
-      render: (record: DataSetItem) => (
+      render: (record: GeoDataSetVM) => (
         <div className="flex items-center gap-2">
           <Button
             size="small"
@@ -123,7 +123,7 @@ const UploadDataSet = () => {
         </div>
       </div>
 
-      <AppTable<DataSetItem>
+        <AppTable<GeoDataSetVM>
         columns={columns}
         dataSource={data}
         rowKey="id"

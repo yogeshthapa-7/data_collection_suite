@@ -30,9 +30,10 @@ export interface DataSetServerSearchResponse {
 }
 
 export interface DataSetFormValues {
-  id?: string
-  name: string
-  description: string
+  DataSetID?: number
+  Name: string
+  Description: string
+  FeatureJson: string
 }
 
 export interface DataSetSavePayload {

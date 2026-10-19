@@ -1,24 +1,18 @@
 import { useEffect, useState } from 'react'
-import { Form, message } from 'antd'
+import { Form, message, Tabs } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
-import {
-  ReloadOutlined,
-  SearchOutlined,
-  EnvironmentOutlined,
-} from '@ant-design/icons'
+import { ReloadOutlined, SearchOutlined, EnvironmentOutlined } from '@ant-design/icons'
 import { AppSearchInput, AppTable, Button, AppDrawer, AppSelect } from '@data-collection-suite/ui'
-import { fetchTreeData } from '@/features/form-data/services/FormData.service'
-import type { CustomResponse } from '@/features/form-data/services/FormData.service'
-import { getCategoryGroupSelectList } from '@/features/setup-pages/category-group/services/category-group.service'
-import { getCategorySelectList } from '@/features/setup-pages/category/services/category.service'
-import type { CategoryOption } from '@/features/setup-pages/category-group/services/category-group.service'
-import type { CategorySelectItem } from '@/features/setup-pages/category/services/category.service'
-import type {
-  SearchableQuestion,
-  SelectOptionItem,
-  TreeDataItem,
-} from '@/features/form-data/types/form-data'
-import { AppMapView, type MapMarker } from '@/shared/components/AppMapView'
+import { fetchTreeView, flattenTree } from '@/features/form-data/services/FormData.service'
+import type { TreeNode, CategoryOption, SearchableQuestion, SelectOptionItem, TreeDataItem } from '@/features/form-data/types/form-data'
+import { AppMapView } from '@/shared/components/AppMapView'
+
+const tabs = [
+  { key: '/departments', label: 'Departments' },
+  { key: '/main-branch', label: 'Main-Branch' },
+  { key: '/branch', label: 'Branch' },
+  { key: '/form-data', label: 'Form Data' },
+]
 
 const FormData = () => {
   const navigate = useNavigate()
@@ -26,7 +20,6 @@ const FormData = () => {
 
   const [formStructure] = Form.useForm()
   const [dynamicFormStructure] = Form.useForm()
-  const [formId] = useState(0)
 
   const [selCategoryGroup, setSelCategoryGroup] = useState<CategoryOption[]>([])
   const [category, setCategory] = useState<CategoryOption[]>([])
@@ -38,56 +31,76 @@ const FormData = () => {
 
   const [mapDrawerOpen, setMapDrawerOpen] = useState(false)
 
+  // Load TreeView on page load
   useEffect(() => {
-    const loadSelectLists = async () => {
-      const [groupList, catList] = await Promise.all([
-        getCategoryGroupSelectList(),
-        getCategorySelectList(),
-      ])
-      setSelCategoryGroup(groupList)
-      setCategory(catList)
+    const load = async () => {
+      try {
+        setLoading(true)
+        const res = await fetchTreeView()
+        const treeData: TreeNode[] = res.Data || []
+        const flat: TreeNode[] = flattenTree(treeData)
+
+        // Group nodes (IsFolder=true) as category groups, others as categories
+        const groupNodes = treeData.filter((n) => n.IsFolder)
+        const leafNodes: TreeNode[] = []
+        const collectLeaves = (nodes: TreeNode[]) =>
+          nodes.forEach((n) => {
+            if (!n.IsFolder) leafNodes.push(n)
+            if (n.children) collectLeaves(n.children)
+          })
+        collectLeaves(treeData)
+
+        const groupOptions: CategoryOption[] = groupNodes.map((n) => ({
+          id: n.id,
+          text: n.text,
+          code: n.code,
+          icon: n.icon,
+          IsFolder: n.IsFolder,
+          children: n.children,
+        }))
+
+        const catOptions: CategoryOption[] = [...flat.filter((n) => !n.IsFolder), ...leafNodes]
+          .map((n) => ({
+            id: n.id,
+            text: n.text,
+            code: n.code,
+            icon: n.icon,
+            IsFolder: n.IsFolder,
+            children: n.children,
+          }))
+
+        setSelCategoryGroup(groupOptions)
+        setCategory(catOptions)
+
+        formStructure.setFieldsValue({
+          categoryGroup: groupOptions[0]?.id ?? undefined,
+        })
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Failed to load tree'
+        message.error(msg)
+      } finally {
+        setLoading(false)
+      }
     }
-    loadSelectLists()
+    load()
   }, [])
 
-  const getSearchAbleQuestion = (): SearchableQuestion[] => searchableQuestions
-
-  const fetchData = async (page?: number) => {
-    const values = formStructure.getFieldsValue()
-    setLoading(true)
-    try {
-      const res: CustomResponse<{ data: TreeDataItem[]; columns?: Record<string, unknown>[] }> =
-        await fetchTreeData({
-          id: Number(values.category || values.categoryGroup),
-          usrGrpCode: '',
-          page: { row: 20, skip: page ? (page - 1) * 20 : 0 },
-          filterData: {
-            ParentGUID: values.parentGUID,
-            ApproveType: values.approveType,
-            FormID: values.categoryGroup,
-          },
-          dynamicFilterData: dynamicFormStructure.getFieldsValue(),
-        })
-
-      const data = res.data
-      const rows: TreeDataItem[] = (Array.isArray(data?.data) ? data.data : []) as TreeDataItem[]
-      setFetchedData(rows)
-
-      if (data?.columns) {
-        setColumns(data.columns as Record<string, unknown>[])
-      }
-
-      // Build accordion items and searchable questions from dynamic form metadata
-      const sq: SearchableQuestion[] = data?.searchableQuestions || []
-      setSearchableQuestions(sq)
-      const accItems: string[] = data?.accordionItems || []
-      setItems(accItems)
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to fetch data'
-      message.error(msg)
-    } finally {
-      setLoading(false)
+  const valueSelected = (value: string) => {
+    formStructure.setFieldsValue({ categoryGroup: value, category: undefined })
+    const selected = selCategoryGroup.find((g) => g.id === value)
+    if (selected?.children) {
+      const childLeaves: CategoryOption[] = selected.children
+        .filter((c) => !c.IsFolder)
+        .map((c) => ({ id: c.id, text: c.text, code: c.code, icon: c.icon, IsFolder: c.IsFolder }))
+      setCategory(childLeaves)
+    } else {
+      const leafCategories = category.filter((c) => c.code === selected?.code)
+      setCategory(leafCategories)
     }
+  }
+
+  const handleSearch = () => {
+    fetchData()
   }
 
   const resetForm = () => {
@@ -97,71 +110,106 @@ const FormData = () => {
     setColumns([])
     setItems([])
     setSearchableQuestions([])
+    setCategory([])
+    setSelCategoryGroup([])
   }
 
-  const handleSearch = () => {
-    formStructure.validateFields().then(() => fetchData(1))
-  }
+  const fetchData = async () => {
+    const values = formStructure.getFieldsValue()
+    setLoading(true)
+    try {
+      const res = await fetchTreeView({
+        parentGUID: values.parentGUID,
+        approveType: Number(values.approveType) || 0,
+        formID: Number(values.formID) || 0,
+      })
 
-  const mapMarkers: MapMarker[] = fetchedData.map((d) => ({
-    position: [Number(d.Latitude), Number(d.Longitude)] as [number, number],
-    label: (d.Name as string) || (d.Title as string) || '',
-  }))
+      const treeData: TreeNode[] = res.Data || []
+      const flat: TreeNode[] = flattenTree(treeData)
+      const rows: TreeDataItem[] = flat as unknown as TreeDataItem[]
+      setFetchedData(rows)
+
+      // Accordion sections = top-level group names
+      const sectionNames = treeData.map((t) => t.text)
+      setItems(sectionNames)
+
+      // Placeholder dynamic questions — customize when API provides metadata
+      setSearchableQuestions([])
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to fetch data'
+      message.error(msg)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const tableColumns = [
     ...(columns.length
       ? columns.map((c) => ({
-          title: c.title || c.header,
+          title: (c.title as string) || (c.header as string),
           dataIndex: c.dataIndex || c.key,
           key: c.key,
           render: c.render,
         }))
-      : [{ title: '', dataIndex: '', key: '' }]),
-  ]
+      : [
+          { title: 'ID', dataIndex: 'id', key: 'id' },
+          { title: 'Text', dataIndex: 'text', key: 'text' },
+          { title: 'Code', dataIndex: 'code', key: 'code' },
+          {
+            title: 'Is Folder',
+            dataIndex: 'IsFolder',
+            key: 'IsFolder',
+            render: (v: boolean) => (v ? 'Yes' : 'No'),
+          },
+        ]),
+  ] as any[]
+
+  const getSearchAbleQuestion = (): SearchableQuestion[] => searchableQuestions
 
   return (
     <div className="p-6">
+      <Tabs activeKey={location.pathname} onChange={navigate} items={tabs} className="mb-4" />
 
       <div className="mb-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
         <Form form={formStructure} layout="vertical" requiredMark={false}>
-        <div className="flex flex-wrap items-end gap-4">
-          {formId === 0 && (
-            <>
-              <div className="w-64">
-                <label className="mb-1 block text-sm font-bold text-slate-700">Category Group</label>
-                <AppSelect
-                  placeholder="Select category group"
-                  value={formStructure.getFieldValue('categoryGroup') ?? undefined}
-                  options={selCategoryGroup.map((o) => ({ value: o.id, label: o.text }))}
-                  onChange={(val) => formStructure.setFieldsValue({ categoryGroup: val })}
-                  showSearch
-                  allowClear
-                />
-              </div>
+          <div className="flex flex-wrap items-end gap-4">
+            <div className="w-64">
+              <label className="mb-1 block text-sm font-bold text-slate-700">Category Group</label>
+              <AppSelect
+                placeholder="Select category group"
+                options={selCategoryGroup.map((o) => ({ value: o.id, label: o.text }))}
+                onChange={(val) => valueSelected(val as string)}
+                showSearch
+                allowClear
+              />
+            </div>
 
-              <div className="w-64">
-                <label className="mb-1 block text-sm font-bold text-slate-700">Category</label>
-                <AppSelect
-                  placeholder="Select category"
-                  value={formStructure.getFieldValue('category') ?? undefined}
-                  options={category.map((o) => ({ value: String(o.CategoryID), label: o.CategoryName }))}
-                  onChange={(val) => formStructure.setFieldsValue({ category: val })}
-                  showSearch
-                  allowClear
-                />
-              </div>
+            <div className="w-64">
+              <label className="mb-1 block text-sm font-bold text-slate-700">Category</label>
+              <AppSelect
+                placeholder="Select category"
+                options={category.map((o) => ({ value: o.id, label: o.text }))}
+                onChange={(val) => formStructure.setFieldsValue({ category: val })}
+                showSearch
+                allowClear
+              />
+            </div>
 
-              <div className="w-64">
-                <label className="mb-1 block text-sm font-bold text-slate-700">Parent GUID</label>
+            <div className="w-64">
+              <label className="mb-1 block text-sm font-bold text-slate-700">Parent GUID</label>
+              <Form.Item name="parentGUID" noStyle>
                 <AppSearchInput
                   placeholder="Enter Parent GUID"
                   value={formStructure.getFieldValue('parentGUID') ?? ''}
                   onChange={(val) => formStructure.setFieldsValue({ parentGUID: val })}
                   onPressEnter={handleSearch}
                 />
-              </div>
-            </>
-          )}
+              </Form.Item>
+            </div>
+          </div>
+        </Form>
+
+        <div className="mt-4 flex items-end gap-4">
           <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
             Search
           </Button>
@@ -178,7 +226,6 @@ const FormData = () => {
             View Map
           </Button>
         </div>
-        </Form>
       </div>
 
       {getSearchAbleQuestion().length > 0 && (
@@ -186,7 +233,7 @@ const FormData = () => {
           {items.map((item, index) => (
             <details key={index} className="border rounded p-3">
               <summary className="cursor-pointer font-medium">{item}</summary>
-               <Form form={dynamicFormStructure} layout="horizontal" className="mt-3">
+              <Form form={dynamicFormStructure} layout="horizontal" className="mt-3">
                 <div className="row">
                   {getSearchAbleQuestion().map((sq) => (
                     <div className="col-lg-3" key={sq.DbColumnName}>
@@ -200,17 +247,13 @@ const FormData = () => {
                             value: o.OptionValue,
                             label: o.DispName,
                           }))}
-                          onChange={(val) =>
-                            dynamicFormStructure.setFieldsValue({ [sq.DbColumnName]: val })
-                          }
+                          onChange={(val) => dynamicFormStructure.setFieldsValue({ [sq.DbColumnName]: val })}
                         />
                       ) : (
                         <AppSearchInput
                           placeholder="Enter value"
                           value={dynamicFormStructure.getFieldValue(sq.DbColumnName) ?? ''}
-                          onChange={(val) =>
-                            dynamicFormStructure.setFieldsValue({ [sq.DbColumnName]: val })
-                          }
+                          onChange={(val) => dynamicFormStructure.setFieldsValue({ [sq.DbColumnName]: val })}
                           onPressEnter={handleSearch}
                         />
                       )}
@@ -236,10 +279,17 @@ const FormData = () => {
         onClose={() => setMapDrawerOpen(false)}
         title="Map View"
         width={1000}
-        destroyOnClose
       >
         <div style={{ height: '600px' }}>
-          <AppMapView height="560px" markers={mapMarkers} />
+          <AppMapView
+            height="560px"
+            markers={fetchedData
+              .filter((d) => d.Latitude && d.Longitude)
+              .map((d) => ({
+                position: [Number(d.Latitude), Number(d.Longitude)] as [number, number],
+                label: (d.text as string) || '',
+              }))}
+          />
         </div>
       </AppDrawer>
     </div>

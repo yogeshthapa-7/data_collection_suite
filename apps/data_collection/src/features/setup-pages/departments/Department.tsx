@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { message, Modal, Tabs } from 'antd'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { ReloadOutlined, EditOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons'
 import { fetchDepartments, deleteDepartment } from '@/features/setup-pages/departments/services/department.service'
 import type { DepartmentItem } from '@/features/setup-pages/departments/types/department'

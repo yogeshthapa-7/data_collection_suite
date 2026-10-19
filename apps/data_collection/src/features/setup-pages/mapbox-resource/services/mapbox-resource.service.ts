@@ -3,6 +3,7 @@ import type {
   MapboxResourceServerSearchRequest,
   MapboxResourceServerSearchResponse,
   MapboxResourceFilterValues,
+  MapboxResourceSavePayload,
 } from '@/features/setup-pages/mapbox-resource/types/mapbox-resource'
 
 const base_url = import.meta.env.VITE_BASE_URL || ''

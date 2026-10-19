@@ -78,7 +78,7 @@ const CategoryGroup = () => {
   const handleDelete = (group: CategoryGroupItem) => {
     Modal.confirm({
       title: 'Delete Category Group',
-      content: `Are you sure you want to delete ${CategoryGroup.CategoryGroupName}?`,
+        content: `Are you sure you want to delete ${group.GroupName}?`,
       icon: <DeleteOutlined />,
       okText: 'Delete',
       okType: 'danger',

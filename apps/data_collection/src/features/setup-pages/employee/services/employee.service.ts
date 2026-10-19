@@ -2,6 +2,7 @@ import axios from 'axios'
 import type {
   EmployeeServerSearchRequest,
   EmployeeServerSearchResponse,
+  EmployeeSavePayload,
   OrgOfficeItem,
   DepartmentItem,
   MainBranchItem,
