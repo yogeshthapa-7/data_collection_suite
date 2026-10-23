@@ -18,6 +18,9 @@ import MainBranchPage from '@/features/setup-pages/main-branch/MainBranch'
 import FormDataTablePage from '@/features/form-data/FormData'
 import { Provider } from 'react-redux'
 import { store } from '@/app/store'
+import QuestionsTab from './features/questions/QuestionsTab'
+import DeploymentPage from '@/features/deployment/Deployment'
+import CategoryLayout from './features/category-detail/CategoryLayout'
 
 function RootApp() {
   return (
@@ -79,6 +82,11 @@ function RootApp() {
             <Route path="/branch" element={<BranchPage />} />
             <Route path="/main-branch" element={<MainBranchPage />} />
             <Route path="/form-data" element={<FormDataTablePage />} />
+            <Route path="/category/:categoryId" element={<CategoryLayout />}>
+              <Route index element={<Navigate to="questions" replace />} />
+              <Route path="questions" element={<QuestionsTab />} />
+              <Route path="deployment" element={<DeploymentPage />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

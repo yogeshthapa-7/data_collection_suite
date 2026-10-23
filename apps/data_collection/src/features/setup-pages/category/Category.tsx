@@ -20,10 +20,14 @@ import { AppSelect, AppSearchInput, AppCard, AppDrawer, AppDropdownMenu, AppPagi
 import { convertAdToBs } from '@data-collection-suite/utils'
 import { usePaginatedList } from '@data-collection-suite/hooks'
 import CategoryForm from './CategoryForm'
+import { useNavigate } from 'react-router-dom'
 
 type CardDetail = { label: string; value: ReactNode }
 
+
+
 const Category = () => {
+  const navigate = useNavigate()
   const [groupOptions, setGroupOptions] = useState<CategoryGroupSelectItem[]>([])
   const [categoryName, setCategoryName] = useState('')
   const [categoryGroup, setCategoryGroup] = useState<number | undefined>()
@@ -182,12 +186,19 @@ const Category = () => {
 
             return (
               <Col xs={24} sm={12} md={12} lg={8} key={category.CategoryID}>
-                <AppCard className="h-full" hover onClick={() => message.info(`Open category: ${category.CategoryName}`)}>
+                <AppCard className="h-full" hover  
+                onClick={() => navigate(`/category/${category.CategoryID}/questions`)}>
                   <div className="mb-4 flex items-start justify-between">
                     <Typography.Title level={5} className="!mb-0 !font-semibold !text-gray-800">
                       {category.CategoryName}
                     </Typography.Title>
-                    <Button size="small" type="primary" icon={<FileTextOutlined />}>
+                    <Button size="small" 
+                    type="primary" 
+                    icon={<FileTextOutlined />}
+                    onClick={(e) => {
+                      e.stopPropagation(); 
+                    }}
+                    >
                       Open Form
                     </Button>
                   </div>

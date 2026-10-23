@@ -1,18 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Form, message, Tabs } from 'antd'
+import { Form, message } from 'antd'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { ReloadOutlined, SearchOutlined, EnvironmentOutlined } from '@ant-design/icons'
 import { AppSearchInput, AppTable, Button, AppDrawer, AppSelect } from '@data-collection-suite/ui'
 import { fetchTreeView, flattenTree } from '@/features/form-data/services/FormData.service'
 import type { TreeNode, CategoryOption, SearchableQuestion, SelectOptionItem, TreeDataItem } from '@/features/form-data/types/form-data'
 import { AppMapView } from '@/shared/components/AppMapView'
-
-const tabs = [
-  { key: '/departments', label: 'Departments' },
-  { key: '/main-branch', label: 'Main-Branch' },
-  { key: '/branch', label: 'Branch' },
-  { key: '/form-data', label: 'Form Data' },
-]
 
 const FormData = () => {
   const navigate = useNavigate()
@@ -168,7 +161,6 @@ const FormData = () => {
 
   return (
     <div className="p-6">
-      <Tabs activeKey={location.pathname} onChange={navigate} items={tabs} className="mb-4" />
 
       <div className="mb-6 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
         <Form form={formStructure} layout="vertical" requiredMark={false}>
