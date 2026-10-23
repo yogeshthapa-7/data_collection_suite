@@ -22,6 +22,7 @@ import QuestionsTab from './features/questions/QuestionsTab'
 import DeploymentPage from '@/features/deployment/Deployment'
 import RankingCriteriasPage from '@/features/ranking-criteria/RankingCriterias'
 // import RankingsPage from '@/features/ranking/Rankings'
+import PhotoGalleryPage from '@/features/photo-gallary/PhotoGallery'
 import CategoryLayout from './features/category-detail/CategoryLayout'
 
 function RootApp() {
@@ -90,6 +91,7 @@ function RootApp() {
               <Route path="deployment" element={<DeploymentPage />} />
               <Route path="ranking-criteria" element={<RankingCriteriasPage />} />
               {/* <Route path="ranking" element={<RankingsPage />} /> */}
+              <Route path="photo-gallary" element={<PhotoGalleryPage />} />
             </Route>
           </Route>
         </Routes>

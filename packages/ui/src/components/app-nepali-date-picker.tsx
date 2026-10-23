@@ -467,12 +467,12 @@ export default function AppNepaliDatePicker({
         onOpenChange={(v) => !disabled && setOpen(v)}
         placement="bottomLeft"
         overlayClassName="nepali-datepicker-popover"
-        overlayStyle={{ backgroundColor: 'transparent', boxShadow: 'none', padding: 0 }}
+        overlayStyle={{ backgroundColor: 'transparent', boxShadow: 'none', padding: 0, zIndex: 9999 }}
         styles={{
           root: { backgroundColor: 'transparent' },
           container: { backgroundColor: 'transparent', padding: 0, boxShadow: 'none' },
         }}
-        getPopupContainer={(triggerNode) => triggerNode.parentNode as HTMLElement}
+        getPopupContainer={() => document.body}
       >
         <Input
           readOnly

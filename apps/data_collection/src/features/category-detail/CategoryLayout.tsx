@@ -11,7 +11,7 @@ const WORKSPACE_TABS: TabItem[] = [
   { key: 'deployment', label: 'Deployment' },
   { key: 'subform', label: 'SubForm' },
   { key: 'response', label: 'Response' },
-  { key: 'photo-gallery', label: 'Photo Gallery' },
+  { key: 'photo-gallary', label: 'Photo Gallery' },
   { key: 'visualization', label: 'Visualization' },
   { key: 'dynamic-report', label: 'Dynamic Report' },
   { key: 'ranking-criteria', label: 'Ranking Criteria' },
