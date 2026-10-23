@@ -2,8 +2,12 @@ export interface DeploymentItem {
   CategoryDeploymentInfoID: number
   Title: string
   CategoryID: number
+  Collectors?: string
+  Managers?: string
   CollectorsArray?: string
   ManagersArray?: string
+  CategoryDeploymentViewerInfo?: UserPermissionItem[]
+  UserPermissionList?: UserPermissionItem[]
   UserID?: number
   UserName?: string
 }
@@ -18,17 +22,18 @@ export interface UserSelectItem {
 }
 
 export interface DeploymentSavePayload {
-  CategoryDeploymentInfoID: number
+    CategoryDeploymentInfoID: number
   CategoryID: number
   Title: string
-  CollectorsArray: string
-  ManagersArray: string
-  UserPermissionList: UserPermissionItem[]
+  Collectors: string
+  Managers: string
+  CategoryDeploymentViewerInfo: UserPermissionItem[]
 }
 
 export interface UserPermissionItem {
-  UserID: number
+   UserID: number
   CanEdit: boolean
   CanReject: boolean
   CanApprove: boolean
+  Username?: string
 }

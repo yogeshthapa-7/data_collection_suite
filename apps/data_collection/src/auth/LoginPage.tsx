@@ -111,7 +111,7 @@ const LoginPage = () => {
       ) {
         navigate('/auth/login/module', { replace: true })
       } else if (clientcode === 'kmc-dc' && userGroupCode === 'OU') {
-        navigate('/features/category/organization', { replace: true })
+        navigate('/category', { replace: true })
       } else if (clientcode === 'kmc-dc' && userGroupCode === 'SU-AD') {
         navigate('/quotation/suchikrit-request', { replace: true })
       } else if (
@@ -121,7 +121,7 @@ const LoginPage = () => {
       ) {
         window.location.href = 'https://projectmanagement.himalayankasturi.com.np/'
       } else {
-        navigate('/features/category', { replace: true })
+        navigate('/category', { replace: true })
       }
     } catch (error: any) {
       const status = error?.response?.status
