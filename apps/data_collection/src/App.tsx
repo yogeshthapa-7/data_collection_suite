@@ -20,6 +20,8 @@ import { Provider } from 'react-redux'
 import { store } from '@/app/store'
 import QuestionsTab from './features/questions/QuestionsTab'
 import DeploymentPage from '@/features/deployment/Deployment'
+import RankingCriteriasPage from '@/features/ranking-criteria/RankingCriterias'
+// import RankingsPage from '@/features/ranking/Rankings'
 import CategoryLayout from './features/category-detail/CategoryLayout'
 
 function RootApp() {
@@ -86,6 +88,8 @@ function RootApp() {
               <Route index element={<Navigate to="questions" replace />} />
               <Route path="questions" element={<QuestionsTab />} />
               <Route path="deployment" element={<DeploymentPage />} />
+              <Route path="ranking-criteria" element={<RankingCriteriasPage />} />
+              {/* <Route path="ranking" element={<RankingsPage />} /> */}
             </Route>
           </Route>
         </Routes>
